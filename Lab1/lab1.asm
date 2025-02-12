@@ -8,13 +8,13 @@
 .intel_syntax noprefix
 .data
 Message:
-    .ascii "Beep\n"
-NameMessage:
-    .ascii "Kali Wilson\n"
+    .ascii "Beep\n\0"
+Name:
+    .ascii "Kali Wilson\n\0"
 Quote:
-    .ascii "RTFM\n"
+    .ascii "Everything is open-source if you can read assembly\n\0"
 OtherMessage:
-    .ascii "Boop\n"
+    .ascii "Boop\n\0"
 
 .text
 .global Begin
@@ -23,7 +23,7 @@ Begin:
     lea rsi, Message
     call PrintString
 
-    lea rsi, NameMessage
+    lea rsi, Name
     call PrintString
 
     lea rsi, Quote
