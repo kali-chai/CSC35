@@ -2,26 +2,26 @@
 # WILSON, KALI
 #
 # 1. Assembly : as -o lab1.o lab1.asm
-# 2. Link     : ld -o a-out lab1.o csc35.o
+# 2. Link     : ld -o a.out lab1.o csc35.o
 # 3. Execute  : ./a.out
 
-.intel_syntax noprefix
-.data
-Message:
-    .ascii "Beep\n\0"
+.intel_syntax noprefix  # uses intel format 
+.section .data          # data section
+Message:                # defines message values (loaded to their own addresses)
+    .asciz "Beep\n"     # creates ascii buffers (with automatic null byte)
 Name:
-    .ascii "Kali Wilson\n\0"
+    .asciz "Kali Wilson\n"
 Quote:
-    .ascii "Everything is open-source if you can read assembly\n\0"
+    .asciz "Everything is open-source if you can read assembly\n"
 OtherMessage:
-    .ascii "Boop\n\0"
+    .asciz "Boop\n"
 
-.text
-.global Begin
+.section .text          # text starts here
+.global Begin           # public label begin
 
-Begin:
-    lea rsi, Message
-    call PrintString
+Begin:                  # unix execution starts
+    lea rsi, Message         # loads data at message's address to rsi
+    call PrintString         # calls from library
 
     lea rsi, Name
     call PrintString
@@ -32,4 +32,4 @@ Begin:
     lea rsi, OtherMessage
     call PrintString
 
-    call ExitProgram
+    call ExitProgram         # calls from library
