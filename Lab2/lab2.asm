@@ -21,7 +21,7 @@
     EndText:
     .asciz "Have fun!\n"
     InvalidInput:
-    .asciz "I need a \"Y\"" for yes or \"N\" for no.\n"
+    .asciz "I need a \"Y\" for yes or \"N\" for no.\n"
     Questions:
     .quad Question1, Question2, Question3, Question4
     Answers:
