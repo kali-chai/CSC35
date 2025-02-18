@@ -32,6 +32,7 @@
     .comm printer 128
 
 .section .text
+.global _start
 .global Begin
 .global PrintAndAnswer
 .global PrintAndAnswerLoop
@@ -42,6 +43,7 @@
 .global ReadString
 .global ExitProgram
 
+_start:
 
 Begin:
     # prints start text
