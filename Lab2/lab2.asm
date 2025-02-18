@@ -63,7 +63,7 @@ PrintAndAnswer:
 
 PrintAndAnswerLoop:
     # loop part of print and answer
-    cmp byte [Questions + rcx * 8], byte 0
+    cmp byte ptr [Questions + rcx * 8], 0
     je PrintAndAnswerOut
     mov rsi, [Questions + rcx * 8]
     call PrintString
@@ -71,9 +71,9 @@ PrintAndAnswerLoop:
     call GetStringLength
     cmp r15, 1
     jne RepeatQuestion
-    cmp byte ptr [answer], byte 89
+    cmp byte ptr [answer], 89
     je AfterLoopPrint
-    cmp byte ptr [answer], byte 78
+    cmp byte ptr [answer], 78
     jne RepeatQuestion
 
 LoopPrint:
@@ -113,7 +113,7 @@ GetStringLength:
 
 StringLengthIter:
     # loop part of getting string length
-    cmp byte [rsi + rcx], byte 0
+    cmp byte ptr [rsi + rcx], 0
     je StringLengthOut
     inc rcx
     jmp StringLengthIter
