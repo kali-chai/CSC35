@@ -28,8 +28,8 @@
     .quad Answer1, Answer2, Answer3, Answer4
 
 .section .bss
-    answer resb 16
-    printer resb 128
+    .comm answer 17
+    .comm printer 128
 
 .section .text
 .global Begin
@@ -63,7 +63,7 @@ PrintAndAnswer:
 
 PrintAndAnswerLoop:
     # loop part of print and answer
-    cmp byte [Questions + rcx * 8], 0
+    cmp byte [Questions + rcx * 8], byte 0
     je PrintAndAnswerOut
     mov rsi, [Questions + rcx * 8]
     call PrintString
@@ -71,9 +71,9 @@ PrintAndAnswerLoop:
     call GetStringLength
     cmp r15, 1
     jne RepeatQuestion
-    cmp byte [answer], 89
+    cmp byte ptr [answer], byte 89
     je AfterLoopPrint
-    cmp byte [answer], 78
+    cmp byte ptr [answer], byte 78
     jne RepeatQuestion
 
 LoopPrint:
@@ -113,7 +113,7 @@ GetStringLength:
 
 StringLengthIter:
     # loop part of getting string length
-    cmp byte [rsi + rcx], 0
+    cmp byte [rsi + rcx], byte 0
     je StringLengthOut
     inc rcx
     jmp StringLengthIter
