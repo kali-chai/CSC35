@@ -28,8 +28,8 @@
     .quad Answer1, Answer2, Answer3, Answer4
 
 .section .bss
-    .comm answer 17
-    .comm printer 128
+    .comm answer, 32
+    .comm printer, 1024
 
 .section .text
 .global _start
@@ -65,7 +65,7 @@ PrintAndAnswer:
 
 PrintAndAnswerLoop:
     # loop part of print and answer
-    cmp byte ptr [Questions + rcx * 8], 0
+    cmp rcx, 4
     je PrintAndAnswerOut
     mov rsi, [Questions + rcx * 8]
     call PrintString
@@ -73,9 +73,9 @@ PrintAndAnswerLoop:
     call GetStringLength
     cmp r15, 1
     jne RepeatQuestion
-    cmp byte ptr [answer], 89
+    cmp byte ptr [answer], 'Y'
     je AfterLoopPrint
-    cmp byte ptr [answer], 78
+    cmp byte ptr [answer], 'N'
     jne RepeatQuestion
 
 LoopPrint:
@@ -97,7 +97,6 @@ RepeatQuestion:
     # calls PrintAndAnswer but with a different question loaded to rsi
     call PrintAndAnswer
     ret
-
 
 PrintString:
     # gets string length and prints to string, returns
@@ -130,10 +129,10 @@ ReadString:
     # reads string from stdin
     mov rsi, answer
     mov rdx, 16
-    mov rax, 0
+    mov rax, 1
     mov rdi, 0
-    call GetStringLength
     syscall
+    mov byte ptr [rsi + rax], 0
     ret
 
 ExitProgram:
