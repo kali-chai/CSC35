@@ -43,7 +43,7 @@ StringLength:
     mov r15, 0
 
 StringLengthIter:
-    cmp BYTE PTR [rdi + r15], 0
+    cmp BYTE PTR [rdi + r15 * 1], 0
     je StringLengthOut
     inc r15
     jmp StringLengthIter
@@ -55,7 +55,7 @@ CopyBuffer:
     mov rcx, 0
 
 CheckLen:
-    cmp BYTE PTR [rsi + rcx], 0
+    cmp BYTE PTR [rsi + rcx * 1], 0
     je CopyBufferOut
     inc rcx
     jmp CheckLen
