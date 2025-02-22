@@ -51,6 +51,9 @@
     # i/o functions
         .global PrintString
         .global ReadString
+        .global ReadStringFlush
+        .global ReadStringFlushBody
+        .global ReadStringNorm
 
     # data functions
         .global StringLength
@@ -95,6 +98,25 @@
         lea rsi, [input]
         mov rdx, 1023
         syscall
+        cmp rax, 1023
+        jle ReadStringNorm
+    ReadStringFlush:
+        push rax
+        push rsi
+        push rdx
+    ReadStringFlushBody:
+        mov rax, 0
+        mov rdi, 0
+        lea rsi, [input]
+        mov rdx, 1024
+        syscall
+        cmp rax, 0
+        jg ReadStringFlushBody
+        pop rdx
+        pop rsi
+        pop rax
+        jmp QuestionBodyInputGet
+    ReadStringNorm:
         dec rax
         mov byte ptr [input + rax], 0
         ret
@@ -155,3 +177,4 @@
         mov rax, 60
         xor rdi, rdi
         syscall
+    

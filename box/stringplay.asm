@@ -1,4 +1,5 @@
 .intel_syntax noprefix
+
 .section .data
     StartText:
     .asciz "Hello World.\n"

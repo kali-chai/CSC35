@@ -3,7 +3,7 @@
 .section .data
     # runtime string
         StartText:
-        .asciz "Time to fire up your Anything Emulator! Answer \"Y\" to my questions by typing 1, or \"N\" by typing 0!\n"
+        .asciz "Time to fire up your Anything Emulator! Answer \"Y\" to my questions or \"N\"!\n"
 
     # question strings
         Question1:
@@ -62,62 +62,29 @@
         test rsi, rsi
         jz QuestionLoopEnd
         call PrintString
-    QuestionLoopInputGet:
+        lea rsi, input
         call ReadString
-        call SendToInput
-        call CheckAnswer
-        test rax, rax
-        jz QuestionLoopInputGet
-        mov al, byte ptr [input]
-        cmp al, 'N'
-        je QuestionLoopContinue
-    QuestionLoopPrintAnswer:
+        cmp byte ptr [rsi], 0
+        je AnswerInval
+        cmp byte ptr [rsi + 1], 0
+        jne AnswerInval
+        cmp byte ptr [rsi], 'N'
+        je AnswerVal
+        cmp byte ptr [rsi], 'Y'
+        Jne AnswerInval
         lea rsi, [Answers + r12 * 8]
         mov rsi, [rsi]
         call PrintString
-    QuestionLoopContinue:
+    AnswerVal:
         inc r12
+        jmp QuestionLoopIter
+    AnswerInval:
+        lea rsi, [RepeatQuestionInv]
+        call PrintString
         jmp QuestionLoopIter
     QuestionLoopEnd:
         ret
 
-    CheckAnswer:
-        cmp byte ptr [input + 1], 0
-        jne CheckAnswerFail
-        mov al, byte ptr [input]
-        cmp al, 'Y'
-        je CheckAnswerSuccess
-        cmp al, 'N'
-        je CheckAnswerSuccess
-    CheckAnswerFail:
-        lea rsi, [RepeatQuestionInv]
-        call PrintString
-        xor rax, rax
-        ret
-    CheckAnswerSuccess:
-        ret
-
-    SendToInput:
-        push rsi
-        lea rdi, [input]
-        mov rcx, 1023
-        push rax
-        xor rax, rax
-    SendToInputLoop:
-        mov al, byte ptr [rsi]
-        mov byte ptr [rdi], al
-        test al, al
-        jz SendToInputEnd
-        cmp rax, rcx
-        jge SendToInputEnd
-        inc rsi
-        inc rdi
-        inc rax
-        loop SendToInputLoop
-    SendToInputEnd:
-        pop rax
-        pop rsi
-        ret
 
     # This was meant to handle large inputs (>=1MiB) gracefully, but I wasn't able to fix the bug. This program will hang on an input larger than the buffer - 1. The library-less version of this program will also encounter a less severe version of this bug, but will print duplicate strings instead of hanging, and otherwise function as normal. This might be the result of buffer overflow.
 
