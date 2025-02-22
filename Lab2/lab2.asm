@@ -1,11 +1,9 @@
 .intel_syntax noprefix
 
-.section .rodata
+.section .data
     # runtime string
         StartText:
-        .asciz "Time to fire up your Anything Emulator! Answer \"Y\" to my questions or \"N\"!\n"
-        ExpectingInput:
-        .asciz "> "
+        .asciz "Time to fire up your Anything Emulator! Answer \"Y\" to my questions by typing 1, or \"N\" by typing 0!\n"
 
     # question strings
         Question1:
@@ -56,47 +54,59 @@
         call PrintString
         call ExitProgram
 
-    # FUNCTION: Loops through questions and answers using R12 as an index. In each iteratin, RSI is loaded with the address of the question string. RSI is checked for null value, and if it's null, the loop ends. Otherwise, PrintString is called for the question and input prompt, then RSI is pointed to the input buffer and ReadString is called. The input is checked for several conditions. First condition that will invalidate the answer is if the first byte is a null byte. Second condition that will invalidate the answer is if the second byte is a null byte. First condition to validate the answer is if the first byte is 'N': In this case, jump to answer validation. The last condition to invalidate the answer is if the first byte is NOT 'Y'. If the answer is valid, RSI is pointed to the appropriate answer string using the index in R12, and the string is printed. In all cases of valid input, R12 is incremented and the program jumps to the top of the loop body. If the answer is invalid, the program points RSI to an error message and prints it. The program then jumps to the top of the loop body WITHOUT incrementing R12. The end of the loop is a simple return.
-    # INPUT: None.
-    # CLOBBERS: Registers R12, RSI.
     QuestionLoop:
-        .QuestionLoopStart:
-            xor r12, r12
-        .QuestionLoopIter:
-            lea rsi, [Questions + r12 * 8]
-            mov rsi, [rsi]
-            test rsi, rsi
-            jz .QuestionLoopEnd
-            call PrintString
-            push rsi
-            lea rsi, ExpectingInput
-            call PrintString
-            pop rsi
-            lea rsi, input
-            call ReadString
-        .AnswerCheck:
-            cmp byte ptr [rsi], 0
-            je .AnswerInval
-            cmp byte ptr [rsi + 1], 0
-            jne .AnswerInval
-            cmp byte ptr [rsi], 'N'
-            je .AnswerVal
-            cmp byte ptr [rsi], 'Y'
-            Jne .AnswerInval
-            lea rsi, [Answers + r12 * 8]
-            mov rsi, [rsi]
-            call PrintString
-        .AnswerVal:
-            inc r12
-            jmp .QuestionLoopIter
-        .AnswerInval:
-            lea rsi, [RepeatQuestionInv]
-            call PrintString
-            jmp .QuestionLoopIter
-        .QuestionLoopEnd:
-            ret
+        xor r12, r12
+    QuestionLoopIter:
+        lea rsi, [Questions + r12 * 8]
+        mov rsi, [rsi]
+        test rsi, rsi
+        jz QuestionLoopEnd
+        call PrintString
+    QuestionLoopInputGet:
+        call ReadString
+        call SendToInput
+        call CheckAnswer
+        test rax, rax
+        jz QuestionLoopInputGet
+        mov al, byte ptr [input]
+        cmp al, 'N'
+        je QuestionLoopContinue
+    QuestionLoopPrintAnswer:
+        lea rsi, [Answers + r12 * 8]
+        mov rsi, [rsi]
+        call PrintString
+    QuestionLoopContinue:
+        inc r12
+        jmp QuestionLoopIter
+    QuestionLoopEnd:
+        ret
 
-# Note: The libraryless version of this program is better-commented and has a dedicated buffer overflow checker/flusher. Do not ask how long it took me to write it, it was painful.
-# This was a tricky one. I initially tried to program this to store a counter that then compared the iterations to the length of the quad, which would then break the loop if they matched. It was too complex and doubled the label size. Before this, this program used to have separate functions for different types of bad input, and I also tried to write a buffer overflow handler in its own function.
-# I also wrote around ReadString calls to print "> " to the terminal. User experience.
-# the benefits of caffeine
+    CheckAnswer:
+        cmp byte ptr [input + 1], 0
+        jne CheckAnswerFail
+        mov al, byte ptr [input]
+        cmp al, 'Y'
+        je CheckAnswerSuccess
+        cmp al, 'N'
+        je CheckAnswerSuccess
+    CheckAnswerFail:
+        lea rsi, [RepeatQuestionInv]
+        call PrintString
+        xor rax, rax
+        ret
+    CheckAnswerSuccess:
+        ret
+
+    SendToInput:
+        lea rdi, [input]
+        mov rcx, 1023
+    SendToInputLoop:
+        mov al, byte ptr [rsi]
+        mov byte ptr [rdi], al
+        test al, al
+        jz SendToInputEnd
+        inc rsi
+        inc rdi
+        loop SendToInputLoop
+    SendToInputEnd:
+        ret
