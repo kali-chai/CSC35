@@ -12,3 +12,6 @@ I can't say this enough. LEA is your lord and savior. Use it for anything that i
 DON'T LOAD STRINGS TO REGISTERS. USE LEA. IF YOUR STRING ISN'T TINY, IT'S NOT GOING TO FIT IN A REGISTER. ITS CALLED A SEGFAULT.
 JZ is a little weird. Note for reference: It's like a CMP, but sets the flag at register ZF. TEST RAX RAX then JZ SOMEFUNC is essentially a CMP RAX, 0 JE SOMEFUNC
 No need to check R12 against some value, just use the top of the iterator to check if plugging in R12 gets you a 0.
+
+~~This was meant to handle large inputs (>=1MiB) gracefully, but I wasn't able to fix the bug. This program will hang on an input larger than the buffer - 1. The library-less version of this program will also encounter a less severe version of this bug, but will print duplicate strings instead of hanging, and otherwise function as normal. This might be the result of buffer overflow.~~
+Fixed.
