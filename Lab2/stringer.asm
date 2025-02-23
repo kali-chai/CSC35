@@ -33,7 +33,7 @@
         RepeatQuestionInv:
         .asciz "I need a \"Y\" for yes or \"N\" for no.\n"
         BufferOverflow:
-        .asciz "That input is too large! Press any key to retry.\n"
+        .asciz "That input is too large! Please enter a single character \"Y\" or \"N\" to answer.\n"
 
     # String arrays.
         Questions:
@@ -44,6 +44,7 @@
 .section .bss
     # Input buffer. There were originally 5 buffers.
         .comm input, 1024
+        .comm lastprompt, 1024
 
 .section .text
     # Runtime functions.
@@ -57,7 +58,8 @@
 
     # Data functions.
         .global StringLength
-        .global DestroyBuffer
+        .global DestroyInputBuffer
+        .global DestroyLastPromptBuffer
 
     # Question functions.
         .global Question
@@ -90,14 +92,14 @@
 
     # FUNCTION: Reads string from STDIN into buffer pointed to by RSI through SYSCALL. If input is too long (checked by CMP RAX, 1022) the buffer will be flushed, the buffer will be destroyed, an error message will print and the user will be prompted to press a key.
     # INPUT: RSI - Pointer to buffer to read into.
-    # CLOBBERS: Registers RAX, RDI, RSI, RDX.
+    # CLOBBERS: Registers RAX, RDI, RSI, RDX, buffer input.
     ReadString:
         .ReadStringTop:
-            call DestroyBuffer
+            call DestroyInputBuffer
             lea rsi, ExpectingInput
             call PrintString
-            mov rax, 0
-            mov rdi, 0
+            xor rax, rax
+            xor rdi, rdi
             lea rsi, [input]
             mov rdx, 1023
             syscall
@@ -110,8 +112,33 @@
             call FlushSTDIN
             lea rsi, BufferOverflow
             call PrintString
+            lea rsi, [lastprompt]
+            call PrintString
             jmp .ReadStringTop
         .ReadStringOut:
+            ret
+
+    # FUNCTION: Copies the string pointed to by RSI into buffer lastprompt. Used by QuestionLoop to save last prompt string to then be re-used by ReadString's buffer overflow handler.
+    # INPUT: RSI - Pointer to last prompt string.
+    # CLOBBERS: Register R15.
+    SendToLastPrompt:
+        .SendToLastPromptTop:
+            mov r15, rsi
+            push rdi
+            push rsi
+            mov rsi, r15
+            lea rdi, [lastprompt]
+            mov rcx, 1023
+        .SendToLastPromptLoop:
+            mov al, byte ptr [rsi]
+            mov byte ptr [rdi], al
+            inc rsi
+            inc rdi
+            test al, al
+            jnz .SendToLastPromptLoop
+        .SendToLastPromptOut:
+            pop rsi
+            pop rdi
             ret
 
     # FUNCTION: Flushes kernel's STDIN buffer until a newline or EOF is found. Catches buffer overflow. Will not clobber registers.
@@ -124,8 +151,8 @@
             push rsi
             push rdx
         .FlushSTDINIter:
-            mov rax, 0
-            mov rdi, 0
+            xor rax, rax
+            xor rdi, rdi
             lea rsi, [input]
             mov rdx, 1
             syscall
@@ -140,11 +167,11 @@
             pop rax
             ret
 
-    # FUNCTION: Destroys buffer by filling it with null bytes. Extra measure to handle oversze input. Will not clobber registers.
+    # FUNCTION: Destroys input buffer by filling it with null bytes. Extra measure to handle oversze input. Will not clobber registers.
     # INPUT: None.
-    # CLOBBERS: None.
-    DestroyBuffer:
-        DestroyBufferTop:
+    # CLOBBERS: Buffer input.
+    DestroyInputBuffer:
+        .DestroyInputBufferTop:
             push rax
             push rcx
             push rdi
@@ -157,11 +184,28 @@
             pop rax
             ret
 
+    # FUNCTION: Destroys lastprompt buffer by filling it with null bytes. Extra measure to handle oversze input. Will not clobber registers.
+    # INPUT: None.
+    # CLOBBERS: Buffer lastprompt.
+    DestroyLastPromptBuffer:
+        .DestroyLastPromptBufferTop:
+            push rax
+            push rcx
+            push rdi
+            mov rcx, 1024
+            xor rax, rax
+            lea rdi, [lastprompt]
+            rep stosb
+            pop rdi
+            pop rcx
+            pop rax
+            ret
+
     # FUNCTION: Calculates the length of a string pointed to by RSI. Assumes string is null-terminated. Returns length in RAX.
     # INPUT: RSI - Pointer to string to measure.
     # CLOBBERS: Register RAX.
     StringLength:
-        StringLengthTop:
+        .StringLengthTop:
             xor rax, rax
         .StringLengthIter:
             cmp BYTE PTR [rsi + rax], 0
@@ -183,9 +227,12 @@
             cmp rsi, 0
             je .QuestionOut
             call PrintString
+            call SendToLastPrompt
             call ReadString
-            jmp CheckAnswer
+            call CheckAnswer
+            jmp .QuestionIter
         .QuestionOut:
+            call DestroyLastPromptBuffer
             ret
 
     # FUNCTION: Checks that two conditions are true: The first byte of the string pointed to by RSI is either 'Y' or 'N', and the second byte is null. If either condition is false, the function prints an error message and  jumps up to QuestionIter. If both conditions are true and the first byte equals 'Y', the function prints the answer string using the Answers array address plus the index stored in R12 (multiplied by scale 8). If the first byte equals 'N', the function skips the print step. Both valid answers increment R12 and jump back to QuestionIter.
@@ -202,14 +249,14 @@
         .CheckAnswerFail:
             lea rsi, [RepeatQuestionInv]
             call PrintString
-            jmp .QuestionIter
+            ret
         .CheckAnswerSuccessAffirm:
             lea rsi, [Answers + r12 * 8]
             mov rsi, [rsi]
             call PrintString
         .CheckAnswerSuccess:
             inc r12
-            jmp .QuestionIter
+            ret
 
     # FUNCTION: Ends the program through SYSCALL.
     # INPUT: None.
