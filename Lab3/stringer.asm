@@ -171,11 +171,24 @@
         .StringLengthOut:
             ret
 
+    QuadLength:
+        .QuadLengthTop:
+            xor rax, rax
+        .QuadLengthIter:
+            cmp QWORD PTR [rsi + rax * 8], 0
+            je .QuadLengthOut
+            inc rax
+            jmp .QuadLengthIter
+        .QuadLengthOut:
+            ret
+
     # FUNCTION: Loops through questions and answers. Checks value pointed to by R12 to determine if any questions are left. If the end of the Questions array has been reached, jumps to QuestionOut. Otherwise, prints loaded question to STDOUT by calling PrintString, reads input into buffer by calling ReadString, and checks the answer by jumping to CheckAnswer. Jump is used to minimize register use and let CheckAnswer directly jump back to QuestionIter.  
     # INPUT: None.
     # CLOBBERS: Registers R12, RSI.
     Question:
         .QuestionTop:
+            xor r15, r15
+            
             xor r12, r12
         .QuestionIter:
             lea rsi, [Questions + r12 * 8]
