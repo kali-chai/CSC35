@@ -188,7 +188,7 @@
     Question:
         .QuestionTop:
             xor r15, r15
-            
+
             xor r12, r12
         .QuestionIter:
             lea rsi, [Questions + r12 * 8]
