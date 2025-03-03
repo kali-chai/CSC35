@@ -270,8 +270,8 @@
             xor r11, r11
             lea rsi, Asker
             call CheckAnswerMain
-            cmp r11, 1
-            jne .QuestionLoopOut
+            test r11, r11
+            jz .QuestionLoopOut
             inc r10
             jmp .QuestionLoopIter
         .QuestionLoopOut:
@@ -303,16 +303,16 @@
             # 4. If none of the above, print the invalid answer message and loop back to the top.
             call ReadString
             call IsStringInteger
-            cmp r15, 1
-            je .CheckAnswerIntegerInQuad
+            test r15, r15
+            jnz .CheckAnswerIntegerInQuad
             lea rdi, OptionsInput
             call CheckEqualStrings
-            cmp r15, 1
-            je .CheckAnswerOptions
+            test r15, r15
+            jnz .CheckAnswerOptions
             lea rdi, ExitInput
             call CheckEqualStrings
-            cmp r15, 1
-            je .CheckAnswerExit
+            test r15, r15
+            jnz .CheckAnswerExit
             jmp .CheckAnswerInv
         .CheckAnswerIntegerInQuad:
             call ParseInt
