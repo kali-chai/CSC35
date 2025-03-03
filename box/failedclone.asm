@@ -3,21 +3,15 @@
 .section .rodata
     # Runtime strings.
         StartText:
-        .asciz "Time to fire up your Anything Emulator! Answer my questions by typing \"Y\" for yes, or \"N\" for no!\n"
+        .asciz "Time to fire up your Anything Emulator! Type the corresponding number to answer my questions!\n"
         ExpectingInput:
         .asciz "> "
-        EndText:
-        .asciz "Have fun!\n"
-
-    # Question strings.
-        Question1:
-        .asciz "Do you want to try some puzzles?\n"
-        Question2:
-        .asciz "Do you want to blow stuff up?\n"
-        Question3:
-        .asciz "Do you want to dig holes?\n"
-        Question4:
-        .asciz "Do you want to build things?\n"
+        AreYouSure:
+        .asciz "Are you sure you want to leave the arcade? Enter \"Y\" for yes or \"N\" for no.\n"
+        EndText1:
+        .asciz "You spent "
+        EndText2:
+        .asciz " quarters playing!\n"
 
     # Answer strings.
         Answer1:
@@ -38,6 +32,7 @@
     # String arrays.
         Questions:
         .quad Question1, Question2, Question3, Question4, 0
+        
         Answers:
         .quad Answer1, Answer2, Answer3, Answer4, 0
 
@@ -68,9 +63,6 @@
     # CLOBBERS: Register RSI.
     _start:
         lea rsi, StartText
-        call PrintString
-        call Question
-        lea rsi, EndText
         call PrintString
         call Exit
 
@@ -142,7 +134,7 @@
 
     # FUNCTION: Destroys buffer by filling it with null bytes. Extra measure to handle oversze input. Will not clobber registers.
     # INPUT: None.
-    # CLOBBERS: Buffer input.
+    # CLOBBERS: None.
     DestroyBuffer:
         .DestroyBufferTop:
             push rax
@@ -171,11 +163,24 @@
         .StringLengthOut:
             ret
 
+    QuadLength:
+        .QuadLengthTop:
+            xor rax, rax
+        .QuadLengthIter:
+            cmp QWORD PTR [rsi + rax * 8], 0
+            je .QuadLengthOut
+            inc rax
+            jmp .QuadLengthIter
+        .QuadLengthOut:
+            ret
+
     # FUNCTION: Loops through questions and answers. Checks value pointed to by R12 to determine if any questions are left. If the end of the Questions array has been reached, jumps to QuestionOut. Otherwise, prints loaded question to STDOUT by calling PrintString, reads input into buffer by calling ReadString, and checks the answer by jumping to CheckAnswer. Jump is used to minimize register use and let CheckAnswer directly jump back to QuestionIter.  
     # INPUT: None.
     # CLOBBERS: Registers R12, RSI.
     Question:
         .QuestionTop:
+            xor r15, r15
+
             xor r12, r12
         .QuestionIter:
             lea rsi, [Questions + r12 * 8]

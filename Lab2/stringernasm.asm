@@ -4,6 +4,8 @@ extern getchar
 extern strlen
 extern ExitProcess
 
+DEFAULT REL
+
 section .data
     StartText db "Time to fire up your Anything Emulator! Answer my questions by typing 'Y' for yes, or 'N' for no!", 0xd, 0xa, 0
     ExpectingInput db "> ", 0
@@ -36,6 +38,8 @@ section .text
 main:
     push rbp
     mov rbp, rsp
+    sub rsp, 32
+    and rsp, -16
 
     lea rcx, [StartText]
     call printf
@@ -51,15 +55,16 @@ PrintString:
     push rbp
     mov rbp, rsp
     sub rsp, 32
+    and rsp, -16
     call printf
-    add rsp, 32
-    mov rbp, rsp
+    leave
     ret
 
 ReadString:
     push rbp
     mov rbp, rsp
     sub rsp, 32
+    and rsp, -16
 
     lea rcx, [ExpectingInput]
     call printf
@@ -68,8 +73,7 @@ ReadString:
     lea rdx, [input]
     call scanf
 
-    add rsp, 32
-    mov rbp, rsp
+    leave
     ret
 
 DestroyBuffer:
