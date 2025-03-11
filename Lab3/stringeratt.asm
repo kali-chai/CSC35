@@ -1,4 +1,4 @@
-.intel_syntax noprefix
+.att_syntax
 
 .section .data
     # Runtime strings. Some were intended to be used but have not seen the light of day.
@@ -82,11 +82,11 @@
     # OUTPUT: No register output. No buffer output. Console outputs start text, options, end text.
     # CLOBBERS: Register RSI.
     _start:
-        lea rsi, StartText
+        leaq StartText, %rsi
         call PrintString
         call PrintOptions
         call QuestionLoop
-        lea rsi, EndText
+        leaq EndText, %rsi
         call PrintString
         call Exit
 
@@ -97,17 +97,17 @@
     # NOTE: Assumes string is null-terminated.
     PrintString:
         .PrintStringTop:
-            push rdi
-            push rdx
-            push rax
+            pushq %rdi
+            pushq %rdx
+            pushq %rax
             call GetStringLength
-            mov rdx, rax
-            mov rax, 1
-            mov rdi, 1
+            movq %rax, %rdx
+            movq $1, %rax
+            movq $1, %rdi
             syscall
-            pop rax
-            pop rdx
-            pop rdi
+            popq %rax
+            popq %rdx
+            popq %rdi
             ret
 
     # FUNCTION: Prints integer pointed to by R14 to STDOUT through SYSCALL by pushing to a little-endian stack and printing from the top of the stack.
@@ -117,38 +117,38 @@
     # NOTE: Assumes integer is positive. Will only function with positive integers up to 2^63-1.
     PrintInteger:
         .PrintIntegerTop:
-            push rax
-            push rdx
-            push rsi
-            push r10
-            push rcx
-            mov rax, r14
-            lea rsi, [intoutput]
-            xor rcx, rcx
+            pushq %rax
+            pushq %rdx
+            pushq %rsi
+            pushq %r10
+            pushq %rcx
+            movq %r14, %rax
+            leaq intoutput, %rsi
+            xorq %rcx, %rcx
         .PrintIntegerBody:
-            mov rdx, 0
-            mov r10, 10
-            idiv r10
-            add dl, '0'
-            push rdx
-            inc rcx
-            test rax, rax
+            movq $0, %rdx
+            movq $10, %r10
+            idivq %r10
+            addb $'0', %dl
+            pushq %rdx
+            incq %rcx
+            testq %rax, %rax
             jnz .PrintIntegerBody
         .PrintIntegerWrite:
-            pop rdx
-            mov byte ptr [rsi], dl
-            inc rsi
-            dec rcx
+            popq %rdx
+            movb %dl, (%rsi)
+            incq %rsi
+            decq %rcx
             jnz .PrintIntegerWrite
-            mov byte ptr [rsi], 0
+            movb $0, (%rsi)
         .PrintIntegerOut:
-            lea rsi, [intoutput]
+            leaq intoutput, %rsi
             call PrintString
-            pop rcx
-            pop r10
-            pop rsi
-            pop rdx
-            pop rax
+            popq %rcx
+            popq %r10
+            popq %rsi
+            popq %rdx
+            popq %rax
             ret
 
     # FUNCTION: Reads string from STDIN into buffer input through SYSCALL. If input is too long (checked by CMP RAX, 1022) the buffer will be flushed, the buffer will be destroyed, an error message will print and the user will be prompted for another input.
@@ -158,31 +158,31 @@
     # NOTE: The buffer is destroyed after every read.
     ReadString:
         .ReadStringTop:
-            push rdi
-            push rdx
-            push rax
+            pushq %rdi
+            pushq %rdx
+            pushq %rax
             call DestroyBuffer
-            lea rsi, ExpectingInput
+            leaq ExpectingInput, %rsi
             call PrintString
-            mov rax, 0
-            mov rdi, 0
-            lea rsi, [input]
-            mov rdx, 1023
+            movq $0, %rax
+            movq $0, %rdi
+            leaq input, %rsi
+            movq $1023, %rdx
             syscall
-            cmp rax, 1022
+            cmpq $1022, %rax
             jg .ReadStringOverflow
-            dec rax
-            mov byte ptr [input + rax], 0
+            decq %rax
+            movb $0, input(%rax)
             jmp .ReadStringOut
         .ReadStringOverflow:
             call FlushSTDIN
-            lea rsi, BufferOverflow
+            leaq BufferOverflow, %rsi
             call PrintString
             jmp .ReadStringTop
         .ReadStringOut:
-            pop rax
-            pop rdx
-            pop rdi
+            popq %rax
+            popq %rdx
+            popq %rdi
             ret
 
     # FUNCTION: Returns the length of the string pointed to by RSI to RSI.
@@ -192,11 +192,11 @@
     # NOTE: Assumes string is null-terminated.
     GetStringLength:
         .GetStringLengthTop:
-            xor rax, rax
+            xorq %rax, %rax
         .GetStringLengthIter:
-            cmp BYTE PTR [rsi + rax], 0
+            cmpb $0, (%rsi, %rax)
             je .GetStringLengthOut
-            inc rax
+            incq %rax
             jmp .GetStringLengthIter
         .GetStringLengthOut:
             ret
@@ -208,11 +208,11 @@
     # NOTE: Assumes quad is null-terminated.
     GetQuadLength:
         .GetQuadLengthTop:
-            xor rax, rax
+            xorq %rax, %rax
         .GetQuadLengthIter:
-            cmp qword ptr [rsi + rax * 8], 0
+            cmpq $0, (%rsi, %rax, 8)
             je .GetQuadLengthOut
-            inc rax
+            incq %rax
             jmp .GetQuadLengthIter
         .GetQuadLengthOut:
             ret
@@ -223,25 +223,25 @@
     # CLOBBERS: None.
     FlushSTDIN:
         .FlushSTDINTop:
-            push rax
-            push rdi
-            push rsi
-            push rdx
+            pushq %rax
+            pushq %rdi
+            pushq %rsi
+            pushq %rdx
         .FlushSTDINIter:
-            mov rax, 0
-            mov rdi, 0
-            lea rsi, [input]
-            mov rdx, 1
+            movq $0, %rax
+            movq $0, %rdi
+            leaq input(%rip), %rsi  # Fixed buffer reference
+            movq $1, %rdx
             syscall
-            cmp rax, 0
+            cmpq $0, %rax
             je .FlushSTDINOut
-            cmp byte ptr [input], 10
+            cmpb $10, input(%rip)   # Fixed buffer reference
             jne .FlushSTDINIter
         .FlushSTDINOut:
-            pop rdx
-            pop rsi
-            pop rdi
-            pop rax
+            popq %rdx
+            popq %rsi
+            popq %rdi
+            popq %rax
             ret
 
     # FUNCTION: Destroys buffer by filling it with null bytes. Extra measure to handle oversze input. Will not clobber registers.
@@ -250,38 +250,38 @@
     # CLOBBERS: Buffer input.
     DestroyBuffer:
         .DestroyBufferTop:
-            push rax
-            push rcx
-            push rdi
-            mov rcx, 1024
-            xor rax, rax
-            lea rdi, [input]
+            pushq %rax
+            pushq %rcx
+            pushq %rdi
+            movq $1024, %rcx
+            xorq %rax, %rax
+            leaq input, %rdi
             rep stosb
-            pop rdi
-            pop rcx
-            pop rax
+            popq %rdi
+            popq %rcx
+            popq %rax
             ret
 
     # FUNCTION: Asks the user to make choicesand get printed answers through CheckAnswerMain. A valid input will increment R10. The loop continues until the user inputs "exit". The function will print the number of valid choices made and exit the program.
     QuestionLoop:
         .QuestionLoopTop:
-            lea rsi, OptionQuad
+            leaq OptionQuad, %rsi
             call GetQuadLength
-            xor r10, r10
+            xorq %r10, %r10
         .QuestionLoopIter:
-            xor r11, r11
-            lea rsi, Asker
+            xorq %r11, %r11
+            leaq Asker, %rsi
             call CheckAnswerMain
-            test r11, r11
+            testq %r11, %r11
             jz .QuestionLoopOut
-            inc r10
+            incq %r10
             jmp .QuestionLoopIter
         .QuestionLoopOut:
-            lea rsi, EndText1
+            leaq EndText1, %rsi
             call PrintString
-            mov r14, r10
+            movq %r10, %r14
             call PrintInteger
-            lea rsi, EndText2
+            leaq EndText2, %rsi
             call PrintString
             ret
 
@@ -291,12 +291,12 @@
     # CLOBBERS: 
     CheckAnswerMain:
         .CheckAnswerTop:
-            push r14
-            push r15
-            push rsi
-            push rdi
-            push rax
-            push rdx
+            pushq %r14
+            pushq %r15
+            pushq %rsi
+            pushq %rdi
+            pushq %rax
+            pushq %rdx
         .CheckAnswerBody:
             # Worth writing a comment here because this is a complex label. After the ReadString input is attained, a series of checks are made.
             # 1. Check if the input is an integer. If so, feed to the ParseInt function and check if the integer is within the bounds of the quad.
@@ -305,54 +305,54 @@
             # 4. If none of the above, print the invalid answer message and loop back to the top.
             call ReadString
             call IsStringInteger
-            test r15, r15
+            testq %r15, %r15
             jnz .CheckAnswerIntegerInQuad
-            lea rdi, OptionsInput
+            leaq OptionsInput, %rdi
             call CheckEqualStrings
-            test r15, r15
+            testq %r15, %r15
             jnz .CheckAnswerOptions
-            lea rdi, ExitInput
+            leaq ExitInput, %rdi
             call CheckEqualStrings
-            test r15, r15
+            testq %r15, %r15
             jnz .CheckAnswerExit
             jmp .CheckAnswerInv
         .CheckAnswerIntegerInQuad:
             call ParseInt
-            test r15, r15
+            testq %r15, %r15
             jz .CheckAnswerIntegerOverflow
-            lea rsi, OptionQuad
+            leaq OptionQuad, %rsi
             call GetQuadLength
-            cmp r14, rax
+            cmpq %rax, %r14
             jg .CheckAnswerInv
-            cmp r14, 0
+            cmpq $0, %r14
             jle .CheckAnswerInv        
         .CheckAnswerVal:
-            dec r14
-            mov rsi, [AnswerQuad + r14 * 8]
+            decq %r14
+            movq AnswerQuad(,%r14,8), %rsi  # Added index register
             call PrintString
-            mov r11, 1
+            movq $1, %r11
             jmp .CheckAnswerOut
         .CheckAnswerIntegerOverflow:
-            lea rsi, IntegerOverflow
+            leaq IntegerOverflow, %rsi
             call PrintString
             jmp .CheckAnswerBody
         .CheckAnswerInv:
-            lea rsi, InvalidAnswer
+            leaq InvalidAnswer, %rsi
             call PrintString
             jmp .CheckAnswerBody
         .CheckAnswerOptions:
-            lea rsi, OptionQuad
+            leaq OptionQuad, %rsi
             call PrintOptions
             jmp .CheckAnswerBody
         .CheckAnswerExit:
-            xor r11, r11
+            xorq %r11, %r11
         .CheckAnswerOut:
-            pop rdx
-            pop rax
-            pop rdi
-            pop rsi
-            pop r15
-            pop r14
+            popq %rdx
+            popq %rax
+            popq %rdi
+            popq %rsi
+            popq %r15
+            popq %r14
             ret
 
     # FUNCTION: Returns the options in the quad pointed to by RSI to console, preceded by a 1-index integer.
@@ -362,25 +362,25 @@
     # NOTE: Assumes quad is null-terminated.
     PrintOptions:
         .PrintOptionsTop:
-            push r14
-            push r15
-            xor r15, r15
+            pushq %r14
+            pushq %r15
+            xorq %r15, %r15
         .PrintOptionsBody:
-            cmp qword ptr [OptionQuad + r15 * 8], 0
+            cmpq $0, OptionQuad(,%r15,8)    # Added index register
             je .PrintOptionsOut
-            inc r15
-            mov r14, r15
+            incq %r15
+            movq %r15, %r14
             call PrintInteger
-            dec r15
-            lea rsi, [ColonSpace]
+            decq %r15
+            leaq ColonSpace, %rsi
             call PrintString
-            mov rsi, [OptionQuad + r15 * 8]
+            movq OptionQuad(,%r15,8), %rsi  # Added index register
             call PrintString
-            inc r15
+            incq %r15
             jmp .PrintOptionsBody
         .PrintOptionsOut:
-            pop r15
-            pop r14
+            popq %r15
+            popq %r14
             ret
 
     # FUNCTION: Checks if a String pointed to by RSI is an integer. Returns 1 in R15 if true, 0 in R15 if false.
@@ -390,28 +390,28 @@
     # NOTE: Assumes string is null-terminated. Assumes positive integer.
     IsStringInteger:
         .IsStringIntegerTop:
-            push rax
-            push r8
-            xor r8, r8
+            pushq %rax
+            pushq %r8
+            xorq %r8, %r8
         .IsStringIntegerBody:
-            movzx rax, byte ptr [rsi + r8]
-            cmp rax, 0
+            movzxb (%rsi, %r8), %rax
+            cmpq $0, %rax
             je .IsStringIntegerVal
-            cmp rax, 48
+            cmpq $48, %rax
             jl .IsStringIntegerInv
-            cmp rax, 57
+            cmpq $57, %rax
             jg .IsStringIntegerInv
-            inc r8
+            incq %r8
             jmp .IsStringIntegerBody
         .IsStringIntegerInv:
-            mov r15, 0
+            movq $0, %r15
             jmp .IsStringIntegerOut
         .IsStringIntegerVal:
-            mov r15, 1
+            movq $1, %r15
             jmp .IsStringIntegerOut
         .IsStringIntegerOut:
-            pop r8
-            pop rax
+            popq %r8
+            popq %rax
             ret
 
     # FUNCTION: Parses a string pointed to by RSI as an integer. Returns the integer in R14.
@@ -422,34 +422,33 @@
     ParseInt:
         .ParseIntTop:
             call GetStringLength
-            push rax
-            push r8
-            push r13
-            push rdx
-            xor r8, r8
-            xor r14, r14
-            xor r15, r15
-            dec r8
-            inc r15
+            pushq %rax
+            pushq %r8
+            pushq %r13
+            pushq %rdx
+            xorq %r8, %r8
+            xorq %r14, %r14
+            xorq %r15, %r15
+            incq %r15           # Remove the decq %r8 here since we want to start at 0
         .ParseIntBody:
-            inc r8
-            cmp r8, rax
-            jge .ParseIntOut
-            movzx r13, byte ptr [rsi + r8]
-            sub r13, 48
-            imul r14, 10
+            cmpq %rax, %r8     # Changed comparison order
+            jge .ParseIntOut    # Exit if we've reached the end of string
+            movzxb (%rsi, %r8), %r13
+            subq $48, %r13
+            imulq $10, %r14
             jo .ParseIntOverflow
-            add r14, r13
+            addq %r13, %r14
             jo .ParseIntOverflow
+            incq %r8
             jmp .ParseIntBody
         .ParseIntOverflow:
-            xor r14, r14
-            xor r15, r15
+            xorq %r14, %r14
+            xorq %r15, %r15
         .ParseIntOut:
-            pop rdx
-            pop r13
-            pop r8
-            pop rax
+            popq %rdx
+            popq %r13
+            popq %r8
+            popq %rax
             ret
             
     # FUNCTION: Checks if two strings pointed to by RSI and RDI are equal. Returns 1 in R15 if true, 0 in R15 if false.
@@ -459,29 +458,29 @@
     # NOTE: Assumes strings are null-terminated.
     CheckEqualStrings:
         .CheckEqualStringsTop:
-            push r10
-            push r8
-            push r9
-            xor r8, r8
+            pushq %r10
+            pushq %r8
+            pushq %r9
+            xorq %r8, %r8
         .CheckEqualStringsBody:
-            movzx r9, byte ptr [rsi + r8]
-            movzx r10, byte ptr [rdi + r8]
-            cmp r9, r10
+            movzxb (%rsi, %r8), %r9
+            movzxb (%rdi, %r8), %r10
+            cmpq %r9, %r10
             jne .CheckEqualStringsNotEqual
-            cmp byte ptr [rsi + r8], 0
+            cmpb $0, (%rsi, %r8)
             je .CheckEqualStringsEqual
-            inc r8
+            incq %r8
             jmp .CheckEqualStringsBody
         .CheckEqualStringsNotEqual:
-            mov r15, 0
+            movq $0, %r15
             jmp .CheckEqualStringsOut
         .CheckEqualStringsEqual:
-            mov r15, 1
+            movq $1, %r15
             jmp .CheckEqualStringsOut
         .CheckEqualStringsOut:
-            pop r9
-            pop r8
-            pop r10
+            popq %r9
+            popq %r8
+            popq %r10
             ret
     
     # FUNCTION: Exits the program.
@@ -490,7 +489,7 @@
     # CLOBBERS: Registers RAX, RDI.
     Exit:
         .ExitTop:
-            mov rax, 60
-            xor rdi, rdi
+            movq $60, %rax
+            xorq %rdi, %rdi
             syscall
             ret

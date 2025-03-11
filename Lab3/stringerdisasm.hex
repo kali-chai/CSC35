@@ -1,0 +1,615 @@
+
+stringer.out:     file format elf64-x86-64
+stringer.out
+architecture: i386:x86-64, flags 0x00000112:
+EXEC_P, HAS_SYMS, D_PAGED
+start address 0x0000000000401000
+
+Program Header:
+    LOAD off    0x0000000000000000 vaddr 0x0000000000400000 paddr 0x0000000000400000 align 2**12
+         filesz 0x00000000000000e8 memsz 0x00000000000000e8 flags r--
+    LOAD off    0x0000000000001000 vaddr 0x0000000000401000 paddr 0x0000000000401000 align 2**12
+         filesz 0x000000000000037d memsz 0x000000000000037d flags r-x
+    LOAD off    0x0000000000002000 vaddr 0x0000000000402000 paddr 0x0000000000402000 align 2**12
+         filesz 0x00000000000002bf memsz 0x0000000000000700 flags rw-
+
+Sections:
+Idx Name          Size      VMA               LMA               File off  Algn
+  0 .text         0000037d  0000000000401000  0000000000401000  00001000  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         000002bf  0000000000402000  0000000000402000  00002000  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000440  00000000004022c0  00000000004022c0  000022bf  2**4
+                  ALLOC
+SYMBOL TABLE:
+0000000000000000 l    df *ABS*	0000000000000000 stringer.o
+0000000000402000 l       .data	0000000000000000 StartText
+000000000040208f l       .data	0000000000000000 ExpectingInput
+0000000000402092 l       .data	0000000000000000 EndText
+00000000004020a4 l       .data	0000000000000000 EndText1
+00000000004020af l       .data	0000000000000000 EndText2
+00000000004020c9 l       .data	0000000000000000 ColonSpace
+00000000004020cc l       .data	0000000000000000 NewLine
+00000000004020ce l       .data	0000000000000000 Asker
+00000000004020f7 l       .data	0000000000000000 Game1
+0000000000402100 l       .data	0000000000000000 Game2
+000000000040210a l       .data	0000000000000000 Game3
+0000000000402113 l       .data	0000000000000000 Game4
+0000000000402123 l       .data	0000000000000000 Game5
+000000000040212e l       .data	0000000000000000 Game6
+0000000000402134 l       .data	0000000000000000 OptionQuad
+000000000040216c l       .data	0000000000000000 Game1Answer
+000000000040217a l       .data	0000000000000000 Game2Answer
+000000000040218f l       .data	0000000000000000 Game3Answer
+000000000040219b l       .data	0000000000000000 Game4Answer
+00000000004021ad l       .data	0000000000000000 Game5Answer
+00000000004021b7 l       .data	0000000000000000 Game6Answer
+00000000004021be l       .data	0000000000000000 AnswerQuad
+00000000004021f6 l       .data	0000000000000000 InvalidAnswer
+000000000040225f l       .data	0000000000000000 OptionsInput
+0000000000402267 l       .data	0000000000000000 ExitInput
+000000000040226c l       .data	0000000000000000 BufferOverflow
+000000000040229e l       .data	0000000000000000 IntegerOverflow
+0000000000401029 l       .text	0000000000000000 PrintString
+000000000040125f l       .text	0000000000000000 PrintOptions
+000000000040116d l       .text	0000000000000000 QuestionLoop
+0000000000401370 l       .text	0000000000000000 Exit
+0000000000401029 l       .text	0000000000000000 .PrintStringTop
+00000000004010fb l       .text	0000000000000000 GetStringLength
+0000000000401048 l       .text	0000000000000000 PrintInteger
+0000000000401048 l       .text	0000000000000000 .PrintIntegerTop
+000000000040105c l       .text	0000000000000000 .PrintIntegerBody
+0000000000401079 l       .text	0000000000000000 .PrintIntegerWrite
+0000000000401087 l       .text	0000000000000000 .PrintIntegerOut
+000000000040109b l       .text	0000000000000000 ReadString
+000000000040109b l       .text	0000000000000000 .ReadStringTop
+0000000000401152 l       .text	0000000000000000 DestroyBuffer
+00000000004010e3 l       .text	0000000000000000 .ReadStringOverflow
+00000000004010f7 l       .text	0000000000000000 .ReadStringOut
+000000000040111a l       .text	0000000000000000 FlushSTDIN
+00000000004010fb l       .text	0000000000000000 .GetStringLengthTop
+00000000004010fe l       .text	0000000000000000 .GetStringLengthIter
+0000000000401109 l       .text	0000000000000000 .GetStringLengthOut
+000000000040110a l       .text	0000000000000000 GetQuadLength
+000000000040110a l       .text	0000000000000000 .GetQuadLengthTop
+000000000040110d l       .text	0000000000000000 .GetQuadLengthIter
+0000000000401119 l       .text	0000000000000000 .GetQuadLengthOut
+000000000040111a l       .text	0000000000000000 .FlushSTDINTop
+000000000040111e l       .text	0000000000000000 .FlushSTDINIter
+000000000040114d l       .text	0000000000000000 .FlushSTDINOut
+0000000000401152 l       .text	0000000000000000 .DestroyBufferTop
+000000000040116d l       .text	0000000000000000 .QuestionLoopTop
+000000000040117d l       .text	0000000000000000 .QuestionLoopIter
+00000000004011ba l       .text	0000000000000000 CheckAnswerMain
+0000000000401197 l       .text	0000000000000000 .QuestionLoopOut
+00000000004011ba l       .text	0000000000000000 .CheckAnswerTop
+00000000004011c2 l       .text	0000000000000000 .CheckAnswerBody
+00000000004012a3 l       .text	0000000000000000 IsStringInteger
+00000000004011f7 l       .text	0000000000000000 .CheckAnswerIntegerInQuad
+0000000000401333 l       .text	0000000000000000 CheckEqualStrings
+0000000000401241 l       .text	0000000000000000 .CheckAnswerOptions
+0000000000401253 l       .text	0000000000000000 .CheckAnswerExit
+0000000000401232 l       .text	0000000000000000 .CheckAnswerInv
+00000000004012db l       .text	0000000000000000 ParseInt
+0000000000401219 l       .text	0000000000000000 .CheckAnswerVal
+0000000000401256 l       .text	0000000000000000 .CheckAnswerOut
+000000000040125f l       .text	0000000000000000 .PrintOptionsTop
+0000000000401266 l       .text	0000000000000000 .PrintOptionsBody
+000000000040129e l       .text	0000000000000000 .PrintOptionsOut
+00000000004012a3 l       .text	0000000000000000 .IsStringIntegerTop
+00000000004012a9 l       .text	0000000000000000 .IsStringIntegerBody
+00000000004012ce l       .text	0000000000000000 .IsStringIntegerVal
+00000000004012c5 l       .text	0000000000000000 .IsStringIntegerInv
+00000000004012d7 l       .text	0000000000000000 .IsStringIntegerOut
+00000000004012db l       .text	0000000000000000 .ParseIntTop
+00000000004012f5 l       .text	0000000000000000 .ParseIntBody
+000000000040132c l       .text	0000000000000000 .ParseIntOut
+0000000000401319 l       .text	0000000000000000 .ParseIntOverflow
+0000000000401333 l       .text	0000000000000000 .CheckEqualStringsTop
+000000000040133c l       .text	0000000000000000 .CheckEqualStringsBody
+0000000000401357 l       .text	0000000000000000 .CheckEqualStringsNotEqual
+0000000000401360 l       .text	0000000000000000 .CheckEqualStringsEqual
+0000000000401369 l       .text	0000000000000000 .CheckEqualStringsOut
+0000000000401370 l       .text	0000000000000000 .ExitTop
+00000000004022c0 g     O .bss	0000000000000400 input
+0000000000401000 g       .text	0000000000000000 _start
+00000000004022c0 g       .bss	0000000000000000 __bss_start
+00000000004022bf g       .data	0000000000000000 _edata
+0000000000402700 g       .bss	0000000000000000 _end
+00000000004026c0 g     O .bss	0000000000000040 intoutput
+
+
+Contents of section .text:
+ 401000 488d3425 00204000 e81c0000 00e84d02  H.4%. @.......M.
+ 401010 0000e856 01000048 8d342592 204000e8  ...V...H.4%. @..
+ 401020 05000000 e8470300 00575250 e8ca0000  .....G...WRP....
+ 401030 004889c2 48c7c001 00000048 c7c70100  .H..H......H....
+ 401040 00000f05 585a5fc3 50525641 52514c89  ....XZ_.PRVARQL.
+ 401050 f0488d34 25c02640 004831c9 48c7c200  .H.4%.&@.H1.H...
+ 401060 00000049 c7c20a00 000049f7 fa80c230  ...I......I....0
+ 401070 5248ffc1 4885c075 e35a8816 48ffc648  RH..H..u.Z..H..H
+ 401080 ffc975f5 c6060048 8d3425c0 264000e8  ..u....H.4%.&@..
+ 401090 95ffffff 59415a5e 5a58c357 5250e8af  ....YAZ^ZX.WRP..
+ 4010a0 00000048 8d34258f 204000e8 79ffffff  ...H.4%. @..y...
+ 4010b0 48c7c000 00000048 c7c70000 0000488d  H......H......H.
+ 4010c0 3425c022 400048c7 c2ff0300 000f0548  4%."@.H........H
+ 4010d0 3dfe0300 007f0c48 ffc8c680 c0224000  =......H....."@.
+ 4010e0 00eb14e8 32000000 488d3425 6c224000  ....2...H.4%l"@.
+ 4010f0 e834ffff ffeba458 5a5fc348 31c0803c  .4.....XZ_.H1..<
+ 401100 06007405 48ffc0eb f5c34831 c048833c  ..t.H.....H1.H.<
+ 401110 c6007405 48ffc0eb f4c35057 565248c7  ..t.H.....PWVRH.
+ 401120 c0000000 0048c7c7 00000000 488d3425  .....H......H.4%
+ 401130 c0224000 48c7c201 0000000f 054883f8  ."@.H........H..
+ 401140 00740a80 3c25c022 40000a75 d15a5e5f  .t..<%."@..u.Z^_
+ 401150 58c35051 5748c7c1 00040000 4831c048  X.PQWH......H1.H
+ 401160 8d3c25c0 224000f3 aa5f5958 c3488d34  .<%."@..._YX.H.4
+ 401170 25342140 00e890ff ffff4d31 d24d31db  %4!@......M1.M1.
+ 401180 488d3425 ce204000 e82d0000 004d85db  H.4%. @..-...M..
+ 401190 740549ff c2ebe648 8d3425a4 204000e8  t.I....H.4%. @..
+ 4011a0 85feffff 4d89d6e8 9cfeffff 488d3425  ....M.......H.4%
+ 4011b0 af204000 e870feff ffc34156 41575657  . @..p....AVAWVW
+ 4011c0 5052e8d4 feffffe8 d7000000 4d85ff75  PR..........M..u
+ 4011d0 26488d3c 255f2240 00e85501 00004d85  &H.<%_"@..U...M.
+ 4011e0 ff755e48 8d3c2567 224000e8 43010000  .u^H.<%g"@..C...
+ 4011f0 4d85ff75 5eeb3be8 df000000 4d85ff74  M..u^.;.....M..t
+ 401200 31488d34 25342140 00e8fcfe ffff4939  1H.4%4!@......I9
+ 401210 c67f1f49 83fe007e 1949ffce 4a8b34f5  ...I...~.I..J.4.
+ 401220 be214000 e800feff ff49c7c3 01000000  .!@......I......
+ 401230 eb24488d 3425f621 4000e8ea fdffffeb  .$H.4%.!@.......
+ 401240 81488d34 25342140 00e81100 0000e96f  .H.4%4!@.......o
+ 401250 ffffff4d 31db5a58 5f5e415f 415ec341  ...M1.ZX_^A_A^.A
+ 401260 5641574d 31ff4a83 3cfd3421 40000074  VAWM1.J.<.4!@..t
+ 401270 2d49ffc7 4d89fee8 ccfdffff 49ffcf48  -I..M.......I..H
+ 401280 8d3425c9 204000e8 9dfdffff 4a8b34fd  .4%. @......J.4.
+ 401290 34214000 e890fdff ff49ffc7 ebc8415f  4!@......I....A_
+ 4012a0 415ec350 41504d31 c04a0fb6 04064883  A^.PAPM1.J....H.
+ 4012b0 f800741a 4883f830 7c0b4883 f8397f05  ..t.H..0|.H..9..
+ 4012c0 49ffc0eb e449c7c7 00000000 eb0949c7  I....I........I.
+ 4012d0 c7010000 00eb0041 5858c350 41504155  .......AXX.PAPAU
+ 4012e0 52e815fe ffff4d31 c04d31f6 4d31ff49  R.....M1.M1.M1.I
+ 4012f0 ffc849ff c749ffc0 4939c07d 2f4e0fb6  ..I..I..I9.}/N..
+ 401300 2c064983 ed304c89 f24d6bf6 0a700a49  ,.I..0L..Mk..p.I
+ 401310 89d64d01 ee7002eb dc488d34 259e2240  ..M..p...H.4%."@
+ 401320 00e803fd ffff4d31 f64d31ff 5a415d41  ......M1.M1.ZA]A
+ 401330 5858c341 52415041 514d31c0 4e0fb60c  XX.ARAPAQM1.N...
+ 401340 064e0fb6 14074d39 d1750c42 803c0600  .N....M9.u.B.<..
+ 401350 740e49ff c0ebe549 c7c70000 0000eb09  t.I....I........
+ 401360 49c7c701 000000eb 00415941 58415ac3  I........AYAXAZ.
+ 401370 48c7c03c 00000048 31ff0f05 c3        H..<...H1....   
+Contents of section .data:
+ 402000 54696d65 20746f20 706c6179 20617420  Time to play at 
+ 402010 74686520 61726361 64652120 54797065  the arcade! Type
+ 402020 20746865 2067616d 65277320 6e756d62   the game's numb
+ 402030 65722074 6f20706c 61792c20 656e7465  er to play, ente
+ 402040 7220226f 7074696f 6e732220 746f2073  r "options" to s
+ 402050 65652079 6f757220 6f707469 6f6e7320  ee your options 
+ 402060 61676169 6e2c206f 72202265 78697422  again, or "exit"
+ 402070 20746f20 71756974 21204865 72652773   to quit! Here's
+ 402080 20746865 20636174 616c6f67 3a0a003e   the catalog:..>
+ 402090 2000436f 6d652061 6761696e 20736f6f   .Come again soo
+ 4020a0 6e210a00 596f7520 7370656e 74200020  n!..You spent . 
+ 4020b0 71756172 74657273 20617420 74686520  quarters at the 
+ 4020c0 61726361 64652e0a 003a2000 0a00456e  arcade...: ...En
+ 4020d0 74657220 74686520 6e756d62 6572206f  ter the number o
+ 4020e0 6620796f 75722066 61766f72 69746520  f your favorite 
+ 4020f0 67616d65 210a0050 61632d4d 616e0a00  game!..Pac-Man..
+ 402100 42726561 6b6f7574 0a004672 65657761  Breakout..Freewa
+ 402110 790a0053 70616365 20496e76 61646572  y..Space Invader
+ 402120 730a0041 73746572 6f696473 0a00506f  s..Asteroids..Po
+ 402130 6e670a00 f7204000 00000000 00214000  ng... @......!@.
+ 402140 00000000 0a214000 00000000 13214000  .....!@......!@.
+ 402150 00000000 23214000 00000000 2e214000  ....#!@......!@.
+ 402160 00000000 00000000 00000000 576f636b  ............Wock
+ 402170 6120776f 636b6121 0a004272 65616b20  a wocka!..Break 
+ 402180 74686f73 65206272 69636b73 210a0048  those bricks!..H
+ 402190 6f6e6b20 686f6e6b 210a0041 6c69656e  onk honk!..Alien
+ 4021a0 7320696e 636f6d69 6e67210a 00506577  s incoming!..Pew
+ 4021b0 20706577 210a0042 6f6f7021 0a006c21   pew!..Boop!..l!
+ 4021c0 40000000 00007a21 40000000 00008f21  @.....z!@......!
+ 4021d0 40000000 00009b21 40000000 0000ad21  @......!@......!
+ 4021e0 40000000 0000b721 40000000 00000000  @......!@.......
+ 4021f0 00000000 00005468 61742069 73206e6f  ......That is no
+ 402200 74206120 76616c69 64206f70 74696f6e  t a valid option
+ 402210 2e205479 70652022 6f707469 6f6e7322  . Type "options"
+ 402220 20746f20 73656520 77686174 20796f75   to see what you
+ 402230 2063616e 20706c61 79206f72 20747970   can play or typ
+ 402240 65202265 78697422 20746f20 6c656176  e "exit" to leav
+ 402250 65207468 65206172 63616465 2e0a006f  e the arcade...o
+ 402260 7074696f 6e730065 78697400 54686174  ptions.exit.That
+ 402270 20696e70 75742069 7320746f 6f206c61   input is too la
+ 402280 72676521 20507265 73732061 6e79206b  rge! Press any k
+ 402290 65792074 6f207265 7472792e 0a00596f  ey to retry...Yo
+ 4022a0 7520656e 74657265 64206120 6e756d62  u entered a numb
+ 4022b0 65722074 6f6f206c 61726765 210a00    er too large!.. 
+
+Disassembly of section .text:
+
+0000000000401000 <_start>:
+  401000:	48 8d 34 25 00 20 40 	lea    rsi,ds:0x402000
+  401007:	00 
+  401008:	e8 1c 00 00 00       	call   401029 <PrintString>
+  40100d:	e8 4d 02 00 00       	call   40125f <PrintOptions>
+  401012:	e8 56 01 00 00       	call   40116d <QuestionLoop>
+  401017:	48 8d 34 25 92 20 40 	lea    rsi,ds:0x402092
+  40101e:	00 
+  40101f:	e8 05 00 00 00       	call   401029 <PrintString>
+  401024:	e8 47 03 00 00       	call   401370 <Exit>
+
+0000000000401029 <PrintString>:
+  401029:	57                   	push   rdi
+  40102a:	52                   	push   rdx
+  40102b:	50                   	push   rax
+  40102c:	e8 ca 00 00 00       	call   4010fb <GetStringLength>
+  401031:	48 89 c2             	mov    rdx,rax
+  401034:	48 c7 c0 01 00 00 00 	mov    rax,0x1
+  40103b:	48 c7 c7 01 00 00 00 	mov    rdi,0x1
+  401042:	0f 05                	syscall
+  401044:	58                   	pop    rax
+  401045:	5a                   	pop    rdx
+  401046:	5f                   	pop    rdi
+  401047:	c3                   	ret
+
+0000000000401048 <PrintInteger>:
+  401048:	50                   	push   rax
+  401049:	52                   	push   rdx
+  40104a:	56                   	push   rsi
+  40104b:	41 52                	push   r10
+  40104d:	51                   	push   rcx
+  40104e:	4c 89 f0             	mov    rax,r14
+  401051:	48 8d 34 25 c0 26 40 	lea    rsi,ds:0x4026c0
+  401058:	00 
+  401059:	48 31 c9             	xor    rcx,rcx
+
+000000000040105c <.PrintIntegerBody>:
+  40105c:	48 c7 c2 00 00 00 00 	mov    rdx,0x0
+  401063:	49 c7 c2 0a 00 00 00 	mov    r10,0xa
+  40106a:	49 f7 fa             	idiv   r10
+  40106d:	80 c2 30             	add    dl,0x30
+  401070:	52                   	push   rdx
+  401071:	48 ff c1             	inc    rcx
+  401074:	48 85 c0             	test   rax,rax
+  401077:	75 e3                	jne    40105c <.PrintIntegerBody>
+
+0000000000401079 <.PrintIntegerWrite>:
+  401079:	5a                   	pop    rdx
+  40107a:	88 16                	mov    BYTE PTR [rsi],dl
+  40107c:	48 ff c6             	inc    rsi
+  40107f:	48 ff c9             	dec    rcx
+  401082:	75 f5                	jne    401079 <.PrintIntegerWrite>
+  401084:	c6 06 00             	mov    BYTE PTR [rsi],0x0
+
+0000000000401087 <.PrintIntegerOut>:
+  401087:	48 8d 34 25 c0 26 40 	lea    rsi,ds:0x4026c0
+  40108e:	00 
+  40108f:	e8 95 ff ff ff       	call   401029 <PrintString>
+  401094:	59                   	pop    rcx
+  401095:	41 5a                	pop    r10
+  401097:	5e                   	pop    rsi
+  401098:	5a                   	pop    rdx
+  401099:	58                   	pop    rax
+  40109a:	c3                   	ret
+
+000000000040109b <ReadString>:
+  40109b:	57                   	push   rdi
+  40109c:	52                   	push   rdx
+  40109d:	50                   	push   rax
+  40109e:	e8 af 00 00 00       	call   401152 <DestroyBuffer>
+  4010a3:	48 8d 34 25 8f 20 40 	lea    rsi,ds:0x40208f
+  4010aa:	00 
+  4010ab:	e8 79 ff ff ff       	call   401029 <PrintString>
+  4010b0:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+  4010b7:	48 c7 c7 00 00 00 00 	mov    rdi,0x0
+  4010be:	48 8d 34 25 c0 22 40 	lea    rsi,ds:0x4022c0
+  4010c5:	00 
+  4010c6:	48 c7 c2 ff 03 00 00 	mov    rdx,0x3ff
+  4010cd:	0f 05                	syscall
+  4010cf:	48 3d fe 03 00 00    	cmp    rax,0x3fe
+  4010d5:	7f 0c                	jg     4010e3 <.ReadStringOverflow>
+  4010d7:	48 ff c8             	dec    rax
+  4010da:	c6 80 c0 22 40 00 00 	mov    BYTE PTR [rax+0x4022c0],0x0
+  4010e1:	eb 14                	jmp    4010f7 <.ReadStringOut>
+
+00000000004010e3 <.ReadStringOverflow>:
+  4010e3:	e8 32 00 00 00       	call   40111a <FlushSTDIN>
+  4010e8:	48 8d 34 25 6c 22 40 	lea    rsi,ds:0x40226c
+  4010ef:	00 
+  4010f0:	e8 34 ff ff ff       	call   401029 <PrintString>
+  4010f5:	eb a4                	jmp    40109b <ReadString>
+
+00000000004010f7 <.ReadStringOut>:
+  4010f7:	58                   	pop    rax
+  4010f8:	5a                   	pop    rdx
+  4010f9:	5f                   	pop    rdi
+  4010fa:	c3                   	ret
+
+00000000004010fb <GetStringLength>:
+  4010fb:	48 31 c0             	xor    rax,rax
+
+00000000004010fe <.GetStringLengthIter>:
+  4010fe:	80 3c 06 00          	cmp    BYTE PTR [rsi+rax*1],0x0
+  401102:	74 05                	je     401109 <.GetStringLengthOut>
+  401104:	48 ff c0             	inc    rax
+  401107:	eb f5                	jmp    4010fe <.GetStringLengthIter>
+
+0000000000401109 <.GetStringLengthOut>:
+  401109:	c3                   	ret
+
+000000000040110a <GetQuadLength>:
+  40110a:	48 31 c0             	xor    rax,rax
+
+000000000040110d <.GetQuadLengthIter>:
+  40110d:	48 83 3c c6 00       	cmp    QWORD PTR [rsi+rax*8],0x0
+  401112:	74 05                	je     401119 <.GetQuadLengthOut>
+  401114:	48 ff c0             	inc    rax
+  401117:	eb f4                	jmp    40110d <.GetQuadLengthIter>
+
+0000000000401119 <.GetQuadLengthOut>:
+  401119:	c3                   	ret
+
+000000000040111a <FlushSTDIN>:
+  40111a:	50                   	push   rax
+  40111b:	57                   	push   rdi
+  40111c:	56                   	push   rsi
+  40111d:	52                   	push   rdx
+
+000000000040111e <.FlushSTDINIter>:
+  40111e:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+  401125:	48 c7 c7 00 00 00 00 	mov    rdi,0x0
+  40112c:	48 8d 34 25 c0 22 40 	lea    rsi,ds:0x4022c0
+  401133:	00 
+  401134:	48 c7 c2 01 00 00 00 	mov    rdx,0x1
+  40113b:	0f 05                	syscall
+  40113d:	48 83 f8 00          	cmp    rax,0x0
+  401141:	74 0a                	je     40114d <.FlushSTDINOut>
+  401143:	80 3c 25 c0 22 40 00 	cmp    BYTE PTR ds:0x4022c0,0xa
+  40114a:	0a 
+  40114b:	75 d1                	jne    40111e <.FlushSTDINIter>
+
+000000000040114d <.FlushSTDINOut>:
+  40114d:	5a                   	pop    rdx
+  40114e:	5e                   	pop    rsi
+  40114f:	5f                   	pop    rdi
+  401150:	58                   	pop    rax
+  401151:	c3                   	ret
+
+0000000000401152 <DestroyBuffer>:
+  401152:	50                   	push   rax
+  401153:	51                   	push   rcx
+  401154:	57                   	push   rdi
+  401155:	48 c7 c1 00 04 00 00 	mov    rcx,0x400
+  40115c:	48 31 c0             	xor    rax,rax
+  40115f:	48 8d 3c 25 c0 22 40 	lea    rdi,ds:0x4022c0
+  401166:	00 
+  401167:	f3 aa                	rep stos BYTE PTR es:[rdi],al
+  401169:	5f                   	pop    rdi
+  40116a:	59                   	pop    rcx
+  40116b:	58                   	pop    rax
+  40116c:	c3                   	ret
+
+000000000040116d <QuestionLoop>:
+  40116d:	48 8d 34 25 34 21 40 	lea    rsi,ds:0x402134
+  401174:	00 
+  401175:	e8 90 ff ff ff       	call   40110a <GetQuadLength>
+  40117a:	4d 31 d2             	xor    r10,r10
+
+000000000040117d <.QuestionLoopIter>:
+  40117d:	4d 31 db             	xor    r11,r11
+  401180:	48 8d 34 25 ce 20 40 	lea    rsi,ds:0x4020ce
+  401187:	00 
+  401188:	e8 2d 00 00 00       	call   4011ba <CheckAnswerMain>
+  40118d:	4d 85 db             	test   r11,r11
+  401190:	74 05                	je     401197 <.QuestionLoopOut>
+  401192:	49 ff c2             	inc    r10
+  401195:	eb e6                	jmp    40117d <.QuestionLoopIter>
+
+0000000000401197 <.QuestionLoopOut>:
+  401197:	48 8d 34 25 a4 20 40 	lea    rsi,ds:0x4020a4
+  40119e:	00 
+  40119f:	e8 85 fe ff ff       	call   401029 <PrintString>
+  4011a4:	4d 89 d6             	mov    r14,r10
+  4011a7:	e8 9c fe ff ff       	call   401048 <PrintInteger>
+  4011ac:	48 8d 34 25 af 20 40 	lea    rsi,ds:0x4020af
+  4011b3:	00 
+  4011b4:	e8 70 fe ff ff       	call   401029 <PrintString>
+  4011b9:	c3                   	ret
+
+00000000004011ba <CheckAnswerMain>:
+  4011ba:	41 56                	push   r14
+  4011bc:	41 57                	push   r15
+  4011be:	56                   	push   rsi
+  4011bf:	57                   	push   rdi
+  4011c0:	50                   	push   rax
+  4011c1:	52                   	push   rdx
+
+00000000004011c2 <.CheckAnswerBody>:
+  4011c2:	e8 d4 fe ff ff       	call   40109b <ReadString>
+  4011c7:	e8 d7 00 00 00       	call   4012a3 <IsStringInteger>
+  4011cc:	4d 85 ff             	test   r15,r15
+  4011cf:	75 26                	jne    4011f7 <.CheckAnswerIntegerInQuad>
+  4011d1:	48 8d 3c 25 5f 22 40 	lea    rdi,ds:0x40225f
+  4011d8:	00 
+  4011d9:	e8 55 01 00 00       	call   401333 <CheckEqualStrings>
+  4011de:	4d 85 ff             	test   r15,r15
+  4011e1:	75 5e                	jne    401241 <.CheckAnswerOptions>
+  4011e3:	48 8d 3c 25 67 22 40 	lea    rdi,ds:0x402267
+  4011ea:	00 
+  4011eb:	e8 43 01 00 00       	call   401333 <CheckEqualStrings>
+  4011f0:	4d 85 ff             	test   r15,r15
+  4011f3:	75 5e                	jne    401253 <.CheckAnswerExit>
+  4011f5:	eb 3b                	jmp    401232 <.CheckAnswerInv>
+
+00000000004011f7 <.CheckAnswerIntegerInQuad>:
+  4011f7:	e8 df 00 00 00       	call   4012db <ParseInt>
+  4011fc:	4d 85 ff             	test   r15,r15
+  4011ff:	74 31                	je     401232 <.CheckAnswerInv>
+  401201:	48 8d 34 25 34 21 40 	lea    rsi,ds:0x402134
+  401208:	00 
+  401209:	e8 fc fe ff ff       	call   40110a <GetQuadLength>
+  40120e:	49 39 c6             	cmp    r14,rax
+  401211:	7f 1f                	jg     401232 <.CheckAnswerInv>
+  401213:	49 83 fe 00          	cmp    r14,0x0
+  401217:	7e 19                	jle    401232 <.CheckAnswerInv>
+
+0000000000401219 <.CheckAnswerVal>:
+  401219:	49 ff ce             	dec    r14
+  40121c:	4a 8b 34 f5 be 21 40 	mov    rsi,QWORD PTR [r14*8+0x4021be]
+  401223:	00 
+  401224:	e8 00 fe ff ff       	call   401029 <PrintString>
+  401229:	49 c7 c3 01 00 00 00 	mov    r11,0x1
+  401230:	eb 24                	jmp    401256 <.CheckAnswerOut>
+
+0000000000401232 <.CheckAnswerInv>:
+  401232:	48 8d 34 25 f6 21 40 	lea    rsi,ds:0x4021f6
+  401239:	00 
+  40123a:	e8 ea fd ff ff       	call   401029 <PrintString>
+  40123f:	eb 81                	jmp    4011c2 <.CheckAnswerBody>
+
+0000000000401241 <.CheckAnswerOptions>:
+  401241:	48 8d 34 25 34 21 40 	lea    rsi,ds:0x402134
+  401248:	00 
+  401249:	e8 11 00 00 00       	call   40125f <PrintOptions>
+  40124e:	e9 6f ff ff ff       	jmp    4011c2 <.CheckAnswerBody>
+
+0000000000401253 <.CheckAnswerExit>:
+  401253:	4d 31 db             	xor    r11,r11
+
+0000000000401256 <.CheckAnswerOut>:
+  401256:	5a                   	pop    rdx
+  401257:	58                   	pop    rax
+  401258:	5f                   	pop    rdi
+  401259:	5e                   	pop    rsi
+  40125a:	41 5f                	pop    r15
+  40125c:	41 5e                	pop    r14
+  40125e:	c3                   	ret
+
+000000000040125f <PrintOptions>:
+  40125f:	41 56                	push   r14
+  401261:	41 57                	push   r15
+  401263:	4d 31 ff             	xor    r15,r15
+
+0000000000401266 <.PrintOptionsBody>:
+  401266:	4a 83 3c fd 34 21 40 	cmp    QWORD PTR [r15*8+0x402134],0x0
+  40126d:	00 00 
+  40126f:	74 2d                	je     40129e <.PrintOptionsOut>
+  401271:	49 ff c7             	inc    r15
+  401274:	4d 89 fe             	mov    r14,r15
+  401277:	e8 cc fd ff ff       	call   401048 <PrintInteger>
+  40127c:	49 ff cf             	dec    r15
+  40127f:	48 8d 34 25 c9 20 40 	lea    rsi,ds:0x4020c9
+  401286:	00 
+  401287:	e8 9d fd ff ff       	call   401029 <PrintString>
+  40128c:	4a 8b 34 fd 34 21 40 	mov    rsi,QWORD PTR [r15*8+0x402134]
+  401293:	00 
+  401294:	e8 90 fd ff ff       	call   401029 <PrintString>
+  401299:	49 ff c7             	inc    r15
+  40129c:	eb c8                	jmp    401266 <.PrintOptionsBody>
+
+000000000040129e <.PrintOptionsOut>:
+  40129e:	41 5f                	pop    r15
+  4012a0:	41 5e                	pop    r14
+  4012a2:	c3                   	ret
+
+00000000004012a3 <IsStringInteger>:
+  4012a3:	50                   	push   rax
+  4012a4:	41 50                	push   r8
+  4012a6:	4d 31 c0             	xor    r8,r8
+
+00000000004012a9 <.IsStringIntegerBody>:
+  4012a9:	4a 0f b6 04 06       	movzx  rax,BYTE PTR [rsi+r8*1]
+  4012ae:	48 83 f8 00          	cmp    rax,0x0
+  4012b2:	74 1a                	je     4012ce <.IsStringIntegerVal>
+  4012b4:	48 83 f8 30          	cmp    rax,0x30
+  4012b8:	7c 0b                	jl     4012c5 <.IsStringIntegerInv>
+  4012ba:	48 83 f8 39          	cmp    rax,0x39
+  4012be:	7f 05                	jg     4012c5 <.IsStringIntegerInv>
+  4012c0:	49 ff c0             	inc    r8
+  4012c3:	eb e4                	jmp    4012a9 <.IsStringIntegerBody>
+
+00000000004012c5 <.IsStringIntegerInv>:
+  4012c5:	49 c7 c7 00 00 00 00 	mov    r15,0x0
+  4012cc:	eb 09                	jmp    4012d7 <.IsStringIntegerOut>
+
+00000000004012ce <.IsStringIntegerVal>:
+  4012ce:	49 c7 c7 01 00 00 00 	mov    r15,0x1
+  4012d5:	eb 00                	jmp    4012d7 <.IsStringIntegerOut>
+
+00000000004012d7 <.IsStringIntegerOut>:
+  4012d7:	41 58                	pop    r8
+  4012d9:	58                   	pop    rax
+  4012da:	c3                   	ret
+
+00000000004012db <ParseInt>:
+  4012db:	50                   	push   rax
+  4012dc:	41 50                	push   r8
+  4012de:	41 55                	push   r13
+  4012e0:	52                   	push   rdx
+  4012e1:	e8 15 fe ff ff       	call   4010fb <GetStringLength>
+  4012e6:	4d 31 c0             	xor    r8,r8
+  4012e9:	4d 31 f6             	xor    r14,r14
+  4012ec:	4d 31 ff             	xor    r15,r15
+  4012ef:	49 ff c8             	dec    r8
+  4012f2:	49 ff c7             	inc    r15
+
+00000000004012f5 <.ParseIntBody>:
+  4012f5:	49 ff c0             	inc    r8
+  4012f8:	49 39 c0             	cmp    r8,rax
+  4012fb:	7d 2f                	jge    40132c <.ParseIntOut>
+  4012fd:	4e 0f b6 2c 06       	movzx  r13,BYTE PTR [rsi+r8*1]
+  401302:	49 83 ed 30          	sub    r13,0x30
+  401306:	4c 89 f2             	mov    rdx,r14
+  401309:	4d 6b f6 0a          	imul   r14,r14,0xa
+  40130d:	70 0a                	jo     401319 <.ParseIntOverflow>
+  40130f:	49 89 d6             	mov    r14,rdx
+  401312:	4d 01 ee             	add    r14,r13
+  401315:	70 02                	jo     401319 <.ParseIntOverflow>
+  401317:	eb dc                	jmp    4012f5 <.ParseIntBody>
+
+0000000000401319 <.ParseIntOverflow>:
+  401319:	48 8d 34 25 9e 22 40 	lea    rsi,ds:0x40229e
+  401320:	00 
+  401321:	e8 03 fd ff ff       	call   401029 <PrintString>
+  401326:	4d 31 f6             	xor    r14,r14
+  401329:	4d 31 ff             	xor    r15,r15
+
+000000000040132c <.ParseIntOut>:
+  40132c:	5a                   	pop    rdx
+  40132d:	41 5d                	pop    r13
+  40132f:	41 58                	pop    r8
+  401331:	58                   	pop    rax
+  401332:	c3                   	ret
+
+0000000000401333 <CheckEqualStrings>:
+  401333:	41 52                	push   r10
+  401335:	41 50                	push   r8
+  401337:	41 51                	push   r9
+  401339:	4d 31 c0             	xor    r8,r8
+
+000000000040133c <.CheckEqualStringsBody>:
+  40133c:	4e 0f b6 0c 06       	movzx  r9,BYTE PTR [rsi+r8*1]
+  401341:	4e 0f b6 14 07       	movzx  r10,BYTE PTR [rdi+r8*1]
+  401346:	4d 39 d1             	cmp    r9,r10
+  401349:	75 0c                	jne    401357 <.CheckEqualStringsNotEqual>
+  40134b:	42 80 3c 06 00       	cmp    BYTE PTR [rsi+r8*1],0x0
+  401350:	74 0e                	je     401360 <.CheckEqualStringsEqual>
+  401352:	49 ff c0             	inc    r8
+  401355:	eb e5                	jmp    40133c <.CheckEqualStringsBody>
+
+0000000000401357 <.CheckEqualStringsNotEqual>:
+  401357:	49 c7 c7 00 00 00 00 	mov    r15,0x0
+  40135e:	eb 09                	jmp    401369 <.CheckEqualStringsOut>
+
+0000000000401360 <.CheckEqualStringsEqual>:
+  401360:	49 c7 c7 01 00 00 00 	mov    r15,0x1
+  401367:	eb 00                	jmp    401369 <.CheckEqualStringsOut>
+
+0000000000401369 <.CheckEqualStringsOut>:
+  401369:	41 59                	pop    r9
+  40136b:	41 58                	pop    r8
+  40136d:	41 5a                	pop    r10
+  40136f:	c3                   	ret
+
+0000000000401370 <Exit>:
+  401370:	48 c7 c0 3c 00 00 00 	mov    rax,0x3c
+  401377:	48 31 ff             	xor    rdi,rdi
+  40137a:	0f 05                	syscall
+  40137c:	c3                   	ret
