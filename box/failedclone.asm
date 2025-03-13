@@ -3,21 +3,15 @@
 .section .rodata
     # Runtime strings.
         StartText:
-        .asciz "Time to fire up your Anything Emulator! Answer my questions by typing \"Y\" for yes, or \"N\" for no!\n"
+        .asciz "Time to fire up your Anything Emulator! Type the corresponding number to answer my questions!\n"
         ExpectingInput:
         .asciz "> "
-        EndText:
-        .asciz "Have fun!\n"
-
-    # Question strings.
-        Question1:
-        .asciz "Do you want to try some puzzles?\n"
-        Question2:
-        .asciz "Do you want to blow stuff up?\n"
-        Question3:
-        .asciz "Do you want to dig holes?\n"
-        Question4:
-        .asciz "Do you want to build things?\n"
+        AreYouSure:
+        .asciz "Are you sure you want to leave the arcade? Enter \"Y\" for yes or \"N\" for no.\n"
+        EndText1:
+        .asciz "You spent "
+        EndText2:
+        .asciz " quarters playing!\n"
 
     # Answer strings.
         Answer1:
@@ -33,18 +27,18 @@
         RepeatQuestionInv:
         .asciz "I need a \"Y\" for yes or \"N\" for no.\n"
         BufferOverflow:
-        .asciz "That input is too large! Please enter a single character \"Y\" or \"N\" to answer.\n"
+        .asciz "That input is too large! Press any key to retry.\n"
 
     # String arrays.
         Questions:
         .quad Question1, Question2, Question3, Question4, 0
+        
         Answers:
         .quad Answer1, Answer2, Answer3, Answer4, 0
 
 .section .bss
     # Input buffer. There were originally 5 buffers.
         .comm input, 1024
-        .comm lastprompt, 1024
 
 .section .text
     # Runtime functions.
@@ -58,8 +52,7 @@
 
     # Data functions.
         .global StringLength
-        .global DestroyInputBuffer
-        .global DestroyLastPromptBuffer
+        .global DestroyBuffer
 
     # Question functions.
         .global Question
@@ -70,9 +63,6 @@
     # CLOBBERS: Register RSI.
     _start:
         lea rsi, StartText
-        call PrintString
-        call Question
-        lea rsi, EndText
         call PrintString
         call Exit
 
@@ -92,14 +82,14 @@
 
     # FUNCTION: Reads string from STDIN into buffer pointed to by RSI through SYSCALL. If input is too long (checked by CMP RAX, 1022) the buffer will be flushed, the buffer will be destroyed, an error message will print and the user will be prompted to press a key.
     # INPUT: RSI - Pointer to buffer to read into.
-    # CLOBBERS: Registers RAX, RDI, RSI, RDX, buffer input.
+    # CLOBBERS: Registers RAX, RDI, RSI, RDX.
     ReadString:
         .ReadStringTop:
-            call DestroyInputBuffer
+            call DestroyBuffer
             lea rsi, ExpectingInput
             call PrintString
-            xor rax, rax
-            xor rdi, rdi
+            mov rax, 0
+            mov rdi, 0
             lea rsi, [input]
             mov rdx, 1023
             syscall
@@ -112,33 +102,8 @@
             call FlushSTDIN
             lea rsi, BufferOverflow
             call PrintString
-            lea rsi, [lastprompt]
-            call PrintString
             jmp .ReadStringTop
         .ReadStringOut:
-            ret
-
-    # FUNCTION: Copies the string pointed to by RSI into buffer lastprompt. Used by QuestionLoop to save last prompt string to then be re-used by ReadString's buffer overflow handler.
-    # INPUT: RSI - Pointer to last prompt string.
-    # CLOBBERS: Register R15.
-    SendToLastPrompt:
-        .SendToLastPromptTop:
-            mov r15, rsi
-            push rdi
-            push rsi
-            mov rsi, r15
-            lea rdi, [lastprompt]
-            mov rcx, 1023
-        .SendToLastPromptLoop:
-            mov al, byte ptr [rsi]
-            mov byte ptr [rdi], al
-            inc rsi
-            inc rdi
-            test al, al
-            jnz .SendToLastPromptLoop
-        .SendToLastPromptOut:
-            pop rsi
-            pop rdi
             ret
 
     # FUNCTION: Flushes kernel's STDIN buffer until a newline or EOF is found. Catches buffer overflow. Will not clobber registers.
@@ -151,8 +116,8 @@
             push rsi
             push rdx
         .FlushSTDINIter:
-            xor rax, rax
-            xor rdi, rdi
+            mov rax, 0
+            mov rdi, 0
             lea rsi, [input]
             mov rdx, 1
             syscall
@@ -167,34 +132,17 @@
             pop rax
             ret
 
-    # FUNCTION: Destroys input buffer by filling it with null bytes. Extra measure to handle oversze input. Will not clobber registers.
+    # FUNCTION: Destroys buffer by filling it with null bytes. Extra measure to handle oversze input. Will not clobber registers.
     # INPUT: None.
-    # CLOBBERS: Buffer input.
-    DestroyInputBuffer:
-        .DestroyInputBufferTop:
+    # CLOBBERS: None.
+    DestroyBuffer:
+        .DestroyBufferTop:
             push rax
             push rcx
             push rdi
             mov rcx, 1024
             xor rax, rax
             lea rdi, [input]
-            rep stosb
-            pop rdi
-            pop rcx
-            pop rax
-            ret
-
-    # FUNCTION: Destroys lastprompt buffer by filling it with null bytes. Extra measure to handle oversze input. Will not clobber registers.
-    # INPUT: None.
-    # CLOBBERS: Buffer lastprompt.
-    DestroyLastPromptBuffer:
-        .DestroyLastPromptBufferTop:
-            push rax
-            push rcx
-            push rdi
-            mov rcx, 1024
-            xor rax, rax
-            lea rdi, [lastprompt]
             rep stosb
             pop rdi
             pop rcx
@@ -215,11 +163,24 @@
         .StringLengthOut:
             ret
 
+    QuadLength:
+        .QuadLengthTop:
+            xor rax, rax
+        .QuadLengthIter:
+            cmp QWORD PTR [rsi + rax * 8], 0
+            je .QuadLengthOut
+            inc rax
+            jmp .QuadLengthIter
+        .QuadLengthOut:
+            ret
+
     # FUNCTION: Loops through questions and answers. Checks value pointed to by R12 to determine if any questions are left. If the end of the Questions array has been reached, jumps to QuestionOut. Otherwise, prints loaded question to STDOUT by calling PrintString, reads input into buffer by calling ReadString, and checks the answer by jumping to CheckAnswer. Jump is used to minimize register use and let CheckAnswer directly jump back to QuestionIter.  
     # INPUT: None.
     # CLOBBERS: Registers R12, RSI.
     Question:
         .QuestionTop:
+            xor r15, r15
+
             xor r12, r12
         .QuestionIter:
             lea rsi, [Questions + r12 * 8]
@@ -227,12 +188,9 @@
             cmp rsi, 0
             je .QuestionOut
             call PrintString
-            call SendToLastPrompt
             call ReadString
-            call CheckAnswer
-            jmp .QuestionIter
+            jmp CheckAnswer
         .QuestionOut:
-            call DestroyLastPromptBuffer
             ret
 
     # FUNCTION: Checks that two conditions are true: The first byte of the string pointed to by RSI is either 'Y' or 'N', and the second byte is null. If either condition is false, the function prints an error message and  jumps up to QuestionIter. If both conditions are true and the first byte equals 'Y', the function prints the answer string using the Answers array address plus the index stored in R12 (multiplied by scale 8). If the first byte equals 'N', the function skips the print step. Both valid answers increment R12 and jump back to QuestionIter.
@@ -249,14 +207,14 @@
         .CheckAnswerFail:
             lea rsi, [RepeatQuestionInv]
             call PrintString
-            ret
+            jmp .QuestionIter
         .CheckAnswerSuccessAffirm:
             lea rsi, [Answers + r12 * 8]
             mov rsi, [rsi]
             call PrintString
         .CheckAnswerSuccess:
             inc r12
-            ret
+            jmp .QuestionIter
 
     # FUNCTION: Ends the program through SYSCALL.
     # INPUT: None.
