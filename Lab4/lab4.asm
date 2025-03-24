@@ -17,7 +17,6 @@
     .lcomm Flags, 2
 
 .section .text
-
     .global Begin
     Begin:
         0:
@@ -118,5 +117,3 @@
         7:
         pop r8
         ret
-
-
