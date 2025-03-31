@@ -318,3 +318,16 @@
         mov qword ptr [qword ptr[qword ptr [HistoryStack]]], r8 # current node added to stack
         ret
 
+    GetNextNode:
+        cmp r15b, 0
+        jl 1f
+        cmp r15b, 1
+        jg 1f
+        mov r8, qword ptr [qword ptr [qword ptr [HistoryStack + 8 + [qword ptr [qword ptr [HistoryStack]] * 8]] + [[r15b * 8] + 8]]]
+        ret
+        1:
+        call NextNodeFail
+        ret
+
+    
+
