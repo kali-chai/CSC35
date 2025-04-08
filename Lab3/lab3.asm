@@ -89,11 +89,17 @@
             push rax
             push rdx
             push rsi
-            push r10
             push rcx
+            push r10
             mov rax, r14
             lea rsi, [intoutput]
             xor rcx, rcx
+        .PrintIntegerCheckNegative:
+            test rax, rax
+            jns .PrintIntegerBody
+            mov byte ptr [rsi], '-'
+            neg rax
+            inc rsi
         .PrintIntegerBody:
             mov rdx, 0
             mov r10, 10
@@ -113,8 +119,8 @@
         .PrintIntegerOut:
             lea rsi, [intoutput]
             call PrintString
-            pop rcx
             pop r10
+            pop rcx
             pop rsi
             pop rdx
             pop rax
@@ -281,23 +287,41 @@
 
     ParseInt:
         .ParseIntTop:
-            push rax
-            push r8
-            push r13
-            call GetStringLength
-            xor r8, r8
-            xor r14, r14
-            dec r8
+            push  rax
+            push  r8
+            push  r13
+            push  rdx
+            push  r10
+            call  GetStringLength
+            xor   r8,  r8
+            xor   r14, r14
+            xor   r15, r15
+            mov   r10, 1
+            dec   r8
+            inc   r15
+        .CheckSign:
+            cmp   byte ptr [rsi], '-'
+            jne   .ParseIntBody
+            inc   r8
+            mov   r10, -1
         .ParseIntBody:
-            inc r8
-            cmp r8, rax
-            jge .ParseIntOut
+            inc   r8
+            cmp   r8, rax
+            jge   .ParseIntOut
             movzx r13, byte ptr [rsi + r8]
-            sub r13, 48
-            imul r14, 10
-            add r14, r13
-            jmp .ParseIntBody
+            sub   r13, 48
+            imul  r14, 10
+            jo    .ParseIntOverflow
+            add   r14, r13
+            jo    .ParseIntOverflow
+            jmp   .ParseIntBody
+        .ParseIntOverflow:
+            xor   r14, r14
+            xor   r15, r15
         .ParseIntOut:
+            imul r14, r10
+            pop r10
+            pop rdx
             pop r13
             pop r8
             pop rax
