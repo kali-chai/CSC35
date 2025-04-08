@@ -270,6 +270,30 @@
 
 .section .text
 
+    CopyBufferToBuffer: #takes rdi as source, rsi as destination, rdx as size
+        0:
+        push rax
+        push rdi
+        push rsi
+        push rdx
+        push r10
+        1:
+        xor r10, r10
+        cmp r10, rdx
+        jge 3f
+        2:
+        mov byte ptr [rsi + r10], byte ptr [rdi + r10]
+        inc r10
+        jmp 2b
+        3:
+        pop r10
+        pop rdx
+        pop rsi
+        pop rdi
+        pop rax
+        ret
+
+
     SetupHistoryStack:
         push rax
         push rdi
@@ -278,15 +302,16 @@
         push r10
         push r8
         push r9
+        mov rdi, 0
         mov rax, 9
         mov rsi, 16
-        mov rdx, 3
-        mov r10, 34
+        mov rdx, 0x1 | 0x2
+        mov r10, 0x20
         mov r8, -1
         mov r9, 0
         syscall
-        mov qword ptr [HistoryStack], rax
-        mov qword ptr [qword ptr [HistoryStack]], 16
+        mov qword ptr [HistoryStack], 0
+        mov qword ptr [HistoryStack + [qword ptr [HistoryStack] * 8] + 8], r15
         pop r9
         pop r8
         pop r10
@@ -302,6 +327,25 @@
         push rsi
         push rdx
         push r10
+        push r8
+        push r9
+        mov rdi, 0
+        mov rsi, [qword ptr [HistoryStack] * 8] + 8
+        mov rdx, 0x1 | 0x2
+        mov r10, 0x20
+        mov r8, -1
+        mov r9, 0
+        syscall
+        push r9
+        pop r8
+        pop r10
+        pop rdx
+        pop rsi
+        pop rdi
+        pop rax
+        mov qword ptr [qword ptr[qword ptr [HistoryStack]]], r8 
+        ret
+
         mov rax, 25
         mov rdi, [HistoryStack]
         mov rsi, qword ptr [rdi]
@@ -309,13 +353,22 @@
         mov r10, 1
         syscall
         mov qword ptr [HistoryStack], rdi
-        add qword ptr [qword ptr [HistoryStack]], 8
+        inc qword ptr [qword ptr [HistoryStack]]
+        
+        ret
+
+    StackShrink:
+        push rax
+        push rdi
+        push rsi
+        push rdx
+        push r10
+        mov 
         pop r10
         pop rdx
         pop rsi
         pop rdi
         pop rax
-        mov qword ptr [qword ptr[qword ptr [HistoryStack]]], r8 # current node added to stack
         ret
 
     GetNextNode:
@@ -329,5 +382,13 @@
         call NextNodeFail
         ret
 
-    
+    Backtrack:
+        0:
+        nop
+        1:
+        cmp r9, rax
+        jg 3f
+        2:
+        mov qword ptr [HistoryStack + [[qword ptr [HistoryStack] * 8] + 8]], 0
+        # get address of HistoryStack, get address of Index, mult by 8, add to HistoryStack + 8, set stack item to 0
 
