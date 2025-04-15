@@ -45,3 +45,97 @@
 
 .section .bss
 
+.section .text
+
+.global _start
+.type _start, @function
+.type CheckEqualStrings, @function
+.type ReadString, @function
+    
+
+    _start:
+        0:
+        nop
+        1:
+        cmp             qword ptr [r8 + 24], 1
+        je              3f
+        2:
+        mov             rsi, qword ptr [r8]
+        call            PrintString
+
+    PrintString:
+        0:
+            push  rdi
+            push  rdx
+            push  rax
+        1:
+            call  GetStringLength
+            mov   rdx, rax
+            mov   rax, 1
+            mov   rdi, 1
+            syscall
+        2:
+            pop   rax
+            pop   rdx
+            pop   rdi
+            ret
+
+    ReadString:
+        0:
+            push        rdi
+            push        rdx
+            push        rax
+        1:
+            call        DestroyBuffer
+            lea         rsi, ExpectingInput
+            call        PrintString
+            mov         rax, 0
+            mov         rdi, 0
+            lea         rsi, [input]
+            mov         rdx, 1023
+            syscall
+            cmp         rax, 1022
+            jg          2f
+            dec         rax
+            mov         byte ptr [input + rax], 0
+            jmp         3f
+        2:
+            call        FlushSTDIN
+            lea         rsi, BufferOverflow
+            call        PrintString
+            jmp         1b
+        3:
+            pop         rax
+            pop         rdx
+            pop         rdi
+            ret
+
+
+    # Function
+    CheckEqualStrings:
+        0:
+            push        r10
+            push        r8
+            push        r9
+            xor         r8, r8
+        1:
+            movzx       r9, byte ptr [rsi + r8]
+            movzx       r10, byte ptr [rdi + r8]
+            cmp         r9, r10
+            jne         2f
+            cmp         byte ptr [rsi + r8], 0
+            je          3f
+            inc         r8
+            jmp         1b
+        2:
+            mov         r15, 0
+            jmp         4f
+        3:
+            mov         r15, 1
+            jmp         4f
+        4:
+            pop         r9
+            pop         r8
+            pop         r10
+            ret
+
