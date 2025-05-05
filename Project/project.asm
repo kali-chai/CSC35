@@ -36,6 +36,9 @@
 
 	DailyMorning:
 		0:
+			cmp		Dist,
+					0
+			jle		2f
 			mov		rsi,
 					11
 			call	ApplyHealthBuff
@@ -60,7 +63,21 @@
 			mov		qword ptr [Dist],
 					rdi
 			call	PrintDaily
+			cmp		Day,
+					100
+			jge		1f
 			ret
+		1:
+			bts		Booleans,
+					0
+			ret
+		2:
+			bts		Booleans,
+					0
+			bts		Booleans,
+					1
+			ret
+
 
 	RandomAct:
 		0:
@@ -144,6 +161,70 @@
 			4
 			jz		5f
 			jmp		0b
+		1:
+			lea		rsi,
+					Resting
+			call	PrintString
+			mov		rdi,
+					Health
+			add		rdi,
+					10
+			mov		qword ptr [Health],
+					rdi
+			ret
+		2:
+			lea		rsi,
+					Hunting
+			call	PrintString
+			mov		rdi,
+					Food
+			add		rdi,
+					10
+			mov		qword ptr [Food],
+					rdi
+			ret
+		3:
+			lea		rsi,
+					Healing
+			call	PrintString
+			mov		rdi,
+					Health
+			add		rdi,
+					20
+			mov		qword ptr [Food],
+					rdi
+			sub		rdi,
+					10
+			mov		qword ptr [Food],
+					rdi
+			ret
+		4:
+			lea		rsi,
+					Repairing
+			call	PrintString
+			mov		rdi,
+					qeord ptr [Wagon]
+			add		rdi,
+					15
+			mov		qword ptr [Wagon],
+					rdi
+			ret
+		5:
+			lea		rsi,
+					Looting
+			call	PrintString
+			mov		rdi,
+					Food
+			add		rdi,
+					20
+			mov		qword ptr [Health],
+					rdi
+			sub		rdi,
+					30
+			mov		qword ptr [Health],
+					rdi
+			ret
+
 
 	GameEnd:
 		0:
