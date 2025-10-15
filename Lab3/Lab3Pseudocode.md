@@ -67,7 +67,7 @@
 
 ## DestroyOutputBuffer
 
-    Destroys the output buffer (this is just data security).
+    Destroys the output buffer.
 
 ## PrintOptions
 
