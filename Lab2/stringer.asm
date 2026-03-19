@@ -267,5 +267,5 @@
         xor rdi, rdi
         syscall
 
-# Written in MSVC and debugged with GDB.
+# Written in MSVSC and debugged with GDB.
 # 2025 Kali Wilson
